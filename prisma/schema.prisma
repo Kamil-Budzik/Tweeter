@@ -11,8 +11,58 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Example {
-  id        String   @id @default(cuid())
+// RETRIEVED FROM CLERK
+model User {
+  id       String   @id @default(cuid()) // Will be retrieved from clerk
+  username String   @unique
+  email    String   @unique
+  Profile  Profile?
+
+  @@index([id])
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  content   String
+  author    Profile   @relation(fields: [authorId], references: [userId])
+  authorId  String
+  likes     Like[]
+  comments  Comment[]
+
+  @@index([authorId, id])
+}
+
+model Profile {
+  id        Int       @id @default(autoincrement())
+  bio       String
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @unique
+  posts     Post[]
+  like      Like[]
+  commments Comment[]
+
+  @@index([userId, id])
+}
+
+model Like {
+  id     Int     @id @default(autoincrement())
+  post   Post    @relation(fields: [postId], references: [id])
+  postId Int
+  user   Profile @relation(fields: [userId], references: [userId])
+  userId String  @unique
+
+  @@index([userId, postId, id])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  user      Profile  @relation(fields: [userId], references: [userId])
+  userId    String   @unique
+  content   String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  @@index([postId, userId, id])
 }
