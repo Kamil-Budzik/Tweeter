@@ -6,6 +6,7 @@ function Icon() {
       height="30"
       fill="none"
       viewBox="0 0 41 30"
+      className="md:hidden"
     >
       <path
         fill="#2F80ED"

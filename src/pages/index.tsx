@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import { useUser } from "@clerk/nextjs";
 import Layout from "~/components/layouts/Layout";
 import { api } from "~/utils/api";
-import MobileLayout from "~/components/layouts/MobileLayout";
 
 const Home: NextPage = () => {
   const { data, isLoading } = api.posts.getAll.useQuery();
@@ -15,9 +14,9 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <MobileLayout>
+      <Layout>
         <h1>MAIN PAGE</h1>
-      </MobileLayout>
+      </Layout>
     </>
   );
 };
