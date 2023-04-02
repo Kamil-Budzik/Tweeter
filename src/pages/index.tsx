@@ -1,7 +1,8 @@
 import { type NextPage } from "next";
 import { useUser } from "@clerk/nextjs";
-import { UserButton } from "@clerk/clerk-react";
+import Layout from "~/components/layouts/Layout";
 import { api } from "~/utils/api";
+import MobileLayout from "~/components/layouts/MobileLayout";
 
 const Home: NextPage = () => {
   const { data, isLoading } = api.posts.getAll.useQuery();
@@ -14,10 +15,9 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <main>
+      <MobileLayout>
         <h1>MAIN PAGE</h1>
-        <UserButton />
-      </main>
+      </MobileLayout>
     </>
   );
 };
