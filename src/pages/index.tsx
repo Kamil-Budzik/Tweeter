@@ -6,10 +6,14 @@ import { api } from "~/utils/api";
 import { SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 
 const Home: NextPage = () => {
-  // const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const { data, isLoading } = api.posts.getAll.useQuery();
   const user = useUser();
 
-  console.log(user.user);
+  console.log(user.user?.id);
+  if (isLoading) return <h1>LOADING...</h1>;
+
+  if (!data) return <h1>ERROR</h1>;
+
   return (
     <>
       <Head>
@@ -22,6 +26,9 @@ const Home: NextPage = () => {
           <div>
             <SignInButton /> <br />
             <SignOutButton />
+            {data.map((post) => (
+              <h1 key={post.id}>{post.content}</h1>
+            ))}
           </div>
         ) : (
           <SignInButton />
