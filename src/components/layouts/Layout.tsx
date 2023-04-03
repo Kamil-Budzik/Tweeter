@@ -13,7 +13,7 @@ interface Props {
 
 const Layout: FC<Props> = (props) => {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="fixed left-0 right-0 top-0">
       <div className="flex items-center justify-between p-2">
         <Link href="/">
           <MobileLogo />
@@ -41,7 +41,7 @@ const Layout: FC<Props> = (props) => {
         </div>
       </div>
       <main className="flex-grow bg-[#F2F2F2]">{props.children}</main>
-      <nav className="absolute bottom-0 left-0 right-0 flex bg-white md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 flex bg-white md:hidden">
         <Link
           href="/"
           className="flex h-14 w-1/3 items-center justify-center border-b-2 border-blue-500 text-2xl"
