@@ -40,7 +40,7 @@ const Layout: FC<Props> = (props) => {
           <UserButton showName={true} />
         </div>
       </div>
-      <main className="h-screen flex-grow overflow-auto bg-[#F2F2F2]">
+      <main className="h-screen flex-grow overflow-auto bg-[#F2F2F2] pb-24">
         {props.children}
       </main>
       <nav className="fixed bottom-0 left-0 right-0 flex bg-white md:hidden">
