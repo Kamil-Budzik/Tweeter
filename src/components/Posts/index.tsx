@@ -22,13 +22,13 @@ const Posts: NextPage = () => {
   console.log(data);
 
   return (
-    <>
-      <h1>Posts page</h1>
-      {data.map((item) => (
-        <PostsItem {...item} key={item.post.id} />
-      ))}
-      ;
-    </>
+    <div className="flex flex-col items-center p-4">
+      <section>
+        {data.map((item) => (
+          <PostsItem {...item} key={item.post.id} />
+        ))}
+      </section>
+    </div>
   );
 };
 

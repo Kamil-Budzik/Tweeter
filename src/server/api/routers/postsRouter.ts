@@ -6,7 +6,7 @@ import { clerkClient, type User } from "@clerk/nextjs/api";
 const filterUserForClient = (user: User) => {
   return {
     id: user.id,
-    username: user.username,
+    username: user.username || "",
     profileImageUrl: user.profileImageUrl,
   };
 };
@@ -24,8 +24,6 @@ export const postsRouter = createTRPCRouter({
         limit: 100,
       })
     ).map(filterUserForClient);
-
-    console.log(users);
 
     return posts.map((post) => ({
       post,
