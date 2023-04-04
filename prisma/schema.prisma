@@ -14,7 +14,7 @@ datasource db {
 model Post {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  content   String
+  content   String   @db.LongText
   // author    Profile  @relation(fields: [authorId], references: [userId])
   authorId  String
 
