@@ -2,6 +2,7 @@ import { type NextPage } from "next";
 import { api } from "~/utils/api";
 import { LoadingPage } from "~/components/ui/Loading";
 import PostsItem from "~/components/Posts/PostsItem";
+import TweetForm from "~/components/Posts/TweetForm";
 
 const Posts: NextPage = () => {
   const { data, isLoading } = api.posts.getAll.useQuery();
@@ -23,6 +24,7 @@ const Posts: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center p-4">
+      <TweetForm />
       <section>
         {data.map((item) => (
           <PostsItem {...item} key={item.post.id} />

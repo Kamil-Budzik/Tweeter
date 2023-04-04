@@ -8,7 +8,7 @@ const PostsItem = ({ post, author }: Props) => {
     <article className="mb-6 max-w-3xl rounded rounded-2xl bg-white p-4 shadow">
       <div className="flex " id="post-card-header">
         <img
-          className="h-16 w-16 rounded-2xl"
+          className="h-16 w-16 rounded-2xl object-cover"
           src={author.profileImageUrl}
           alt={
             author.username
