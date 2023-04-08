@@ -1,5 +1,6 @@
 import { type RouterOutputs } from "~/utils/api";
 import dayjs from "dayjs";
+import Link from "next/link";
 
 type Props = RouterOutputs["posts"]["getAll"][number];
 const PostsItem = ({ post, author }: Props) => {
@@ -7,17 +8,27 @@ const PostsItem = ({ post, author }: Props) => {
   return (
     <article className="mb-6 max-w-3xl rounded rounded-2xl bg-white p-4 shadow">
       <div className="flex " id="post-card-header">
-        <img
-          className="h-16 w-16 rounded-2xl object-cover"
-          src={author.profileImageUrl}
-          alt={
-            author.username
-              ? `${author.username}'s picture`
-              : `Author's picture`
-          }
-        />
+        <Link
+          href={`/profile/${author.username}`}
+          className="rounded-2xl bg-[#BDBDBD]"
+        >
+          <img
+            className="duration-750 h-16 w-16 cursor-pointer rounded-2xl object-cover transition hover:opacity-50"
+            src={author.profileImageUrl}
+            alt={
+              author.username
+                ? `${author.username}'s picture`
+                : `Author's picture`
+            }
+          />
+        </Link>
+
         <div className="ml-3">
-          <header className="text-lg font-semibold">{author.username}</header>
+          <Link href={`/profile/${author.username}`}>
+            <header className="text-lg font-semibold hover:underline">
+              {author.username}
+            </header>
+          </Link>
           <p className="text-sm font-semibold text-[#BDBDBD]">
             {dayjs(post.createdAt).format("DD MMMM HH:mm")}
           </p>
