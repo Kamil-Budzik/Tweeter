@@ -2,6 +2,7 @@ import { useUser } from "@clerk/nextjs";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { api } from "~/utils/api";
 import { LoadingSpinner } from "~/components/ui/Loading";
+import { Button } from "~/components/ui/Button";
 
 type Inputs = {
   post: string;
@@ -61,13 +62,9 @@ const TweetForm = () => {
       </div>
 
       {/*TODO: Add "Who can reply section" and maybe image upload*/}
-      <button
-        type="submit"
-        className="mt-6 flex items-center justify-center rounded bg-blue-500 px-6 py-2 font-medium text-white transition hover:bg-blue-600 disabled:bg-blue-300"
-        disabled={!isValid}
-      >
+      <Button isDisabled={!isValid} type="submit">
         Tweet
-      </button>
+      </Button>
     </form>
   );
 };
