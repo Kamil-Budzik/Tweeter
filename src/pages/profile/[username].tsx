@@ -36,7 +36,13 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <title>{username}</title>
       </Head>
       <Layout>
-        <div>{JSON.stringify(data)}</div>
+        <ProfileHeader
+          username={data.username}
+          bio={data.bio}
+          following={2569}
+          followers={10800}
+          profileImageUrl={data.profileImageUrl}
+        />
       </Layout>
     </>
   );
@@ -46,6 +52,7 @@ import { prisma } from "~/server/db";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "~/server/api/root";
 import superjson from "superjson";
+import ProfileHeader from "~/components/Profile/ProfileHeader";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({

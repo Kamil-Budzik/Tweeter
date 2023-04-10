@@ -9,7 +9,7 @@ const filterUserForClient = (user: User) => {
     id: user.id,
     username: user.username || "",
     profileImageUrl: user.profileImageUrl,
-    bio: "Mocked BIO",
+    bio: "Photographer & Filmmaker based in Copenhagen, Denmark ✵ 🇩🇰",
   };
 };
 
