@@ -2,12 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.content-wrapper {
+    @apply max-w-6xl mx-auto;
+}
+
 .transform-header-items {
     @apply -translate-y-16 transform md:transform-none;
 }
 
 .header-content-container {
-    @apply grid -translate-y-12 transform grid-cols-1 justify-items-center gap-3 rounded-2xl bg-white text-[#828282] md:grid-cols-4 md:grid-rows-[100px_auto] md:items-center md:justify-items-start md:gap-0 md:pb-8;
+    @apply grid -translate-y-12 transform grid-cols-1 justify-items-center gap-3 rounded-2xl bg-white text-[#828282] md:grid-cols-[auto_1fr_1fr_1fr] md:grid-rows-[100px_auto] md:items-center md:justify-items-start md:gap-0 md:pb-8;
 }
 
 .profile-margins {

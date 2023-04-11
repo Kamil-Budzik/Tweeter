@@ -16,10 +16,12 @@ const ProfileTweets = ({ posts, user }: Props) => {
   }
 
   return (
-    <section className="profile-margins">
-      {posts.map((post) => (
-        <PostsItem post={post} key={post.id} author={user} />
-      ))}
+    <section className="content-wrapper">
+      <div className="profile-margins">
+        {posts.map((post) => (
+          <PostsItem post={post} key={post.id} author={user} />
+        ))}
+      </div>
     </section>
   );
 };
