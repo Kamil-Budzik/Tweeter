@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/Button";
 import { api } from "~/utils/api";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  const { data } = api.profile.getUserByUsername.useQuery({
+  const { data } = api.posts.getByUsername.useQuery({
     username,
   });
 
@@ -30,6 +30,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       </>
     );
 
+  const { user, posts } = data;
+
   return (
     <>
       <Head>
@@ -37,12 +39,13 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       </Head>
       <Layout>
         <ProfileHeader
-          username={data.username}
-          bio={data.bio}
+          username={user.username}
+          bio={user.bio}
           following={2569}
           followers={10800}
-          profileImageUrl={data.profileImageUrl}
+          profileImageUrl={user.profileImageUrl}
         />
+        <ProfileTweets posts={posts} user={user} />
       </Layout>
     </>
   );
@@ -53,6 +56,7 @@ import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "~/server/api/root";
 import superjson from "superjson";
 import ProfileHeader from "~/components/Profile/ProfileHeader";
+import ProfileTweets from "~/components/Profile/ProfileTweets";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({
@@ -66,7 +70,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   if (typeof username !== "string") throw new Error("no username");
 
-  await ssg.profile.getUserByUsername.prefetch({ username });
+  await ssg.posts.getByUsername.prefetch({ username });
 
   return {
     props: {

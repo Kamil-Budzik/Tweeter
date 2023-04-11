@@ -22,7 +22,7 @@ const ProfileHeader = ({
         alt="Profile background"
         className="h-[300px] w-full object-cover"
       />
-      <div className="header-content-container">
+      <div className="header-content-container profile-margins">
         {/*Profile Image*/}
         <div className="transform-header-items flex h-36 w-36 items-center justify-center rounded-xl bg-white shadow-md md:transform md:justify-self-center">
           <img

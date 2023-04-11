@@ -7,7 +7,7 @@ import Posts from "~/components/Posts";
 // TODO: CHECK this link for handling user bio with unsafeMetadata/publicMetadata
 
 const Home: NextPage = () => {
-  const { user, isSignedIn } = useUser();
+  const { isSignedIn } = useUser();
 
   if (!isSignedIn)
     return (
