@@ -59,7 +59,7 @@ const ProfileHeader = ({
 
         {/*Follow button*/}
         <div className="transform-header-items flex justify-center md:col-start-4  md:row-start-1 md:justify-self-center">
-          <Button>Follow</Button>
+          <Button icon="follow">Follow</Button>
         </div>
       </div>
     </header>
