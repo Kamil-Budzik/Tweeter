@@ -15,34 +15,24 @@ model Post {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   content   String   @db.LongText
-  // author    Profile  @relation(fields: [authorId], references: [userId])
   authorId  String
+  likes     Like[]
 
-  // likes     Like[]  
   // comments  Comment[]
   @@index([authorId])
 }
 
-// model Profile {
-//   id     Int    @id @default(autoincrement())
-//   bio    String
-//   userId String @unique
-//   posts  Post[]
-//
-//   like      Like[]
-//   commments Comment[]
-//   @@index([userId, id])
-// }
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId    String
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id])
 
-// model Like {
-//   id     Int     @id @default(autoincrement())
-//   post   Post    @relation(fields: [postId], references: [id])
-//   postId Int
-//   user   Profile @relation(fields: [userId], references: [userId])
-//   userId String  @unique
-//
-//   @@index([userId, postId, id])
-// }
+  @@index([userId])
+  @@index([postId])
+}
+
 //
 // model Comment {
 //   id        Int      @id @default(autoincrement())
