@@ -1,0 +1,6 @@
+export enum ITEMS_ACTION {
+  COMMENT = "COMMENT",
+  RETWEET = "RETWEET",
+  LIKE = "LIKE",
+  BOOKMARK = "BOOKMARK",
+}

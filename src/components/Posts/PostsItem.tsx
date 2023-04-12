@@ -1,6 +1,7 @@
 import { type RouterOutputs } from "~/utils/api";
 import dayjs from "dayjs";
 import Link from "next/link";
+import PostsItemActionbar from "~/components/Posts/PostsItemActionbar";
 
 type Props = RouterOutputs["posts"]["getAll"][number];
 const PostsItem = ({ post, author }: Props) => {
@@ -34,9 +35,10 @@ const PostsItem = ({ post, author }: Props) => {
           </p>
         </div>
       </div>
-      <div id="post-card-content" className="mt-4 text-[#4F4F4F]">
+      <div id="post-card-content" className="my-4 text-[#4F4F4F]">
         <p>{post.content}</p>
       </div>
+      <PostsItemActionbar />
     </article>
   );
 };
