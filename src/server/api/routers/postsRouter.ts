@@ -58,6 +58,9 @@ export const postsRouter = createTRPCRouter({
         },
         take: 100,
         orderBy: [{ createdAt: "desc" }],
+        include: {
+          likes: true,
+        },
       });
 
       return { posts, user };
@@ -71,5 +74,30 @@ export const postsRouter = createTRPCRouter({
           content: input.text,
         },
       });
+    }),
+  toggleLike: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        postId: z.number(),
+        isLiked: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (input.isLiked) {
+        await ctx.prisma.like.deleteMany({
+          where: {
+            userId: input.userId,
+            postId: input.postId,
+          },
+        });
+      } else {
+        await ctx.prisma.like.create({
+          data: {
+            userId: input.userId,
+            postId: input.postId,
+          },
+        });
+      }
     }),
 });
