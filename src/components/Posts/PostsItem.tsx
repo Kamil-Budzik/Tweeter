@@ -2,10 +2,15 @@ import { type RouterOutputs } from "~/utils/api";
 import dayjs from "dayjs";
 import Link from "next/link";
 import PostsItemActionbar from "~/components/Posts/PostsItemActionbar";
+import { useUser } from "@clerk/nextjs";
 
 type Props = RouterOutputs["posts"]["getAll"][number];
 const PostsItem = ({ post, author }: Props) => {
+  const { user } = useUser();
   if (!post || !author) return <div />;
+
+  const isLiked = post.likes.find((like) => like.userId === user?.id);
+
   return (
     <article className="mb-6 max-w-3xl rounded rounded-2xl bg-white p-4 shadow">
       <div className="flex " id="post-card-header">
@@ -38,7 +43,9 @@ const PostsItem = ({ post, author }: Props) => {
       <div id="post-card-content" className="my-4 text-[#4F4F4F]">
         <p>{post.content}</p>
       </div>
-      <PostsItemActionbar />
+
+      <div>{post.likes.length} Likes</div>
+      <PostsItemActionbar isLiked={!!isLiked} postId={post.id} />
     </article>
   );
 };
