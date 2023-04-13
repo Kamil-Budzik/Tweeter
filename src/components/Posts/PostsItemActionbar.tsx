@@ -15,6 +15,7 @@ const PostsItemActionbar = ({ isLiked, postId }: Props) => {
   const { mutate, isLoading } = api.posts.toggleLike.useMutation({
     onSuccess: () => {
       void ctx.posts.getAll.invalidate();
+      void ctx.posts.getByUsername.invalidate();
     },
   });
   const { user } = useUser();
@@ -22,7 +23,6 @@ const PostsItemActionbar = ({ isLiked, postId }: Props) => {
   const handleClick = (action: ITEMS_ACTION) => {
     switch (action) {
       case ITEMS_ACTION.LIKE:
-        console.log("LIKE A POST");
         if (!user) return;
         mutate({ isLiked: isLiked, postId, userId: user?.id });
         break;
