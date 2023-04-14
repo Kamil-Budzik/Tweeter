@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import PostsItemActionbar from "~/components/Posts/PostsItemActionbar";
 import { useUser } from "@clerk/nextjs";
+import PostComments from "~/components/Posts/PostComments";
 
 type Props = RouterOutputs["posts"]["getAll"][number];
 const PostsItem = ({ post, author }: Props) => {
@@ -46,6 +47,7 @@ const PostsItem = ({ post, author }: Props) => {
 
       <div>{post.likes.length} Likes</div>
       <PostsItemActionbar isLiked={!!isLiked} postId={post.id} />
+      <PostComments postId={post.id} />
     </article>
   );
 };

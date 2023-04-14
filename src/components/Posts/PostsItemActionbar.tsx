@@ -44,11 +44,16 @@ const PostsItemActionbar = ({ isLiked, postId }: Props) => {
     <ul className="flex items-center border-t border-[#F2F2F2] text-xl text-[#4F4F4F]">
       {/*COMMENT*/}
       <li
-        className={`mt-1 flex w-1/4 cursor-pointer items-center justify-center rounded py-3 transition duration-300 hover:bg-blue-300 hover:text-blue-600`}
+        className={`mt-1 flex w-1/4 cursor-pointer items-center justify-center rounded transition duration-300 hover:bg-blue-300 hover:text-blue-600`}
         onClick={() => handleClick(ITEMS_ACTION.COMMENT)}
       >
-        <BiComment />
-        <p className="ml-2 hidden text-sm md:block">Comment</p>
+        <label
+          htmlFor={`comment-input-${postId}`}
+          className="flex w-full cursor-pointer items-center justify-center  py-3"
+        >
+          <BiComment />
+          <p className="ml-2 hidden text-sm md:block">Comment</p>
+        </label>
       </li>
 
       {/*RETWEET*/}
