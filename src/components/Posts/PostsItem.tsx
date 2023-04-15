@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import PostsItemActionbar from "~/components/Posts/PostsItemActionbar";
 import { useUser } from "@clerk/nextjs";
-import PostComments from "~/components/Posts/PostComments";
+import PostComments from "~/components/Posts/comments/PostComments";
 
 type Props = RouterOutputs["posts"]["getAll"][number];
 const PostsItem = ({ post, author }: Props) => {
