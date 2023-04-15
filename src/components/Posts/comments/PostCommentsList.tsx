@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import Link from "next/link";
 
 const PostCommentsList = ({ postId }: { postId: number }) => {
-  const { data, isLoading } = api.posts.getAdditionalData.useQuery({ postId });
+  const { data, isLoading } = api.comments.getByPostId.useQuery({ postId });
 
   if (!data) return <div />;
   console.log(data);

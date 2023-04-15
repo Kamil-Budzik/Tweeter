@@ -1,5 +1,7 @@
 import { useUser } from "@clerk/nextjs";
 import { type SubmitHandler, useForm } from "react-hook-form";
+import { api } from "~/utils/api";
+import { useContext } from "react";
 
 interface Inputs {
   input: string;
@@ -7,11 +9,18 @@ interface Inputs {
 
 const PostCommentForm = ({ postId }: { postId: number }) => {
   const { user } = useUser();
+  const ctx = api.useContext();
+  const { mutate } = api.comments.addComment.useMutation({
+    onSuccess: () => {
+      void ctx.comments.getByPostId.invalidate({ postId });
+      reset();
+    },
+  });
   const { register, handleSubmit, reset } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = ({ input }) => {
-    // if (!user) return;
-    // mutate({ text: data.post, authorId: user.id });
+    if (!user) return;
+    mutate({ postId, text: input, userId: user.id });
     console.log(input);
   };
 
