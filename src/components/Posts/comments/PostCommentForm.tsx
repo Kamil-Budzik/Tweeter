@@ -16,7 +16,7 @@ const PostCommentForm = ({ postId }: { postId: number }) => {
   };
 
   return (
-    <form className="mt-2 flex items-center" onSubmit={handleSubmit(onSubmit)}>
+    <form className="my-2 flex items-center" onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor={`comment-input-${postId}`}>
         <img
           className="mr-2 h-10 w-10 rounded-2xl object-cover"
