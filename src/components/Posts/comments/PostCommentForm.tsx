@@ -28,7 +28,7 @@ const PostCommentForm = ({ postId }: { postId: number }) => {
     <form className="my-2 flex items-center" onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor={`comment-input-${postId}`}>
         <img
-          className="mr-2 h-10 w-10 rounded-2xl object-cover"
+          className={`mr-2 h-10 w-10 rounded-2xl object-cover`}
           src={user?.profileImageUrl}
           alt="Your profile image"
         />

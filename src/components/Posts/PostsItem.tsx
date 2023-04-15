@@ -1,13 +1,17 @@
-import { type RouterOutputs } from "~/utils/api";
+import { api, type RouterOutputs } from "~/utils/api";
 import dayjs from "dayjs";
 import Link from "next/link";
 import PostsItemActionbar from "~/components/Posts/PostsItemActionbar";
 import { useUser } from "@clerk/nextjs";
 import PostComments from "~/components/Posts/comments/PostComments";
+import ProfileImage from "~/components/ui/ProfileImage";
 
 type Props = RouterOutputs["posts"]["getAll"][number];
 const PostsItem = ({ post, author }: Props) => {
   const { user } = useUser();
+  const { data: comments } = api.comments.getByPostId.useQuery({
+    postId: post.id,
+  });
   if (!post || !author) return <div />;
 
   const isLiked = post.likes.find((like) => like.userId === user?.id);
@@ -15,20 +19,11 @@ const PostsItem = ({ post, author }: Props) => {
   return (
     <article className="mb-6 max-w-3xl rounded rounded-2xl bg-white p-4 shadow">
       <div className="flex " id="post-card-header">
-        <Link
-          href={`/profile/${author.username}`}
-          className="rounded-2xl bg-[#BDBDBD]"
-        >
-          <img
-            className="duration-750 h-16 w-16 cursor-pointer rounded-2xl object-cover transition hover:opacity-50"
-            src={author.profileImageUrl}
-            alt={
-              author.username
-                ? `${author.username}'s picture`
-                : `Author's picture`
-            }
-          />
-        </Link>
+        <ProfileImage
+          size={16}
+          username={author.username}
+          imgUrl={author.profileImageUrl}
+        />
 
         <div className="ml-3">
           <Link href={`/profile/${author.username}`}>
@@ -46,6 +41,7 @@ const PostsItem = ({ post, author }: Props) => {
       </div>
 
       <div>{post.likes.length} Likes</div>
+      <div>{comments?.length} comments</div>
       <PostsItemActionbar isLiked={!!isLiked} postId={post.id} />
       <PostComments postId={post.id} />
     </article>
