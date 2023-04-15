@@ -3,6 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { clerkClient, type User } from "@clerk/nextjs/api";
 import { TRPCError } from "@trpc/server";
+import type { Comment } from "@prisma/client";
 
 const filterUserForClient = (user: User) => {
   return {
@@ -22,7 +23,6 @@ export const postsRouter = createTRPCRouter({
         likes: true,
       },
     });
-
     const users = (
       await clerkClient.users.getUserList({
         userId: posts.map((post) => post.authorId),
@@ -64,6 +64,20 @@ export const postsRouter = createTRPCRouter({
       });
 
       return { posts, user };
+    }),
+  getAdditionalData: publicProcedure
+    .input(z.object({ postId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const comments = await ctx.prisma.comment.findMany({
+        where: {
+          postId: input.postId,
+        },
+      });
+      if (comments)
+        return {
+          comments,
+        };
+      return {};
     }),
   addItem: publicProcedure
     .input(z.object({ text: z.string(), authorId: z.string() }))
