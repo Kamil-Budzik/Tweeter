@@ -1,18 +1,12 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { clerkClient, type User } from "@clerk/nextjs/api";
+import { clerkClient } from "@clerk/nextjs/api";
 import { TRPCError } from "@trpc/server";
-import type { Comment } from "@prisma/client";
-
-const filterUserForClient = (user: User) => {
-  return {
-    id: user.id,
-    username: user.username || "",
-    profileImageUrl: user.profileImageUrl,
-    bio: "Photographer & Filmmaker based in Copenhagen, Denmark ✵ 🇩🇰",
-  };
-};
+import {
+  filterUserForClient,
+  filterUserForClientWithDetails,
+} from "~/server/helpers/clientFilters";
 
 export const postsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -42,7 +36,7 @@ export const postsRouter = createTRPCRouter({
         await clerkClient.users.getUserList({
           limit: 100,
         })
-      ).map(filterUserForClient);
+      ).map(filterUserForClientWithDetails);
 
       const user = users.find((user) => user.username === input.username);
 
@@ -73,11 +67,25 @@ export const postsRouter = createTRPCRouter({
           postId: input.postId,
         },
       });
-      if (comments)
-        return {
-          comments,
-        };
-      return {};
+
+      const users = (
+        await clerkClient.users.getUserList({
+          userId: comments.map((comment) => comment.userId),
+        })
+      ).map(filterUserForClient);
+
+      if (!users)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Couldn't find users",
+        });
+
+      if (comments) {
+        return comments.map((comment) => ({
+          comment,
+          author: users.find((user) => user.id === comment.userId),
+        }));
+      }
     }),
   addItem: publicProcedure
     .input(z.object({ text: z.string(), authorId: z.string() }))

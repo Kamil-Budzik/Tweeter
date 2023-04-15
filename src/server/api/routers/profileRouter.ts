@@ -1,17 +1,9 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { clerkClient, type User } from "@clerk/nextjs/api";
+import { clerkClient } from "@clerk/nextjs/api";
 import { TRPCError } from "@trpc/server";
-
-const filterUserForClient = (user: User) => {
-  return {
-    id: user.id,
-    username: user.username || "",
-    profileImageUrl: user.profileImageUrl,
-    bio: "Photographer & Filmmaker based in Copenhagen, Denmark ✵ 🇩🇰",
-  };
-};
+import { filterUserForClientWithDetails } from "~/server/helpers/clientFilters";
 
 export const profileRouter = createTRPCRouter({
   // This is not used at the moment, but might be usefull in the future
@@ -29,6 +21,6 @@ export const profileRouter = createTRPCRouter({
         });
       }
 
-      return filterUserForClient(user);
+      return filterUserForClientWithDetails(user);
     }),
 });
