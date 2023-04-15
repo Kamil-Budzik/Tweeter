@@ -59,34 +59,6 @@ export const postsRouter = createTRPCRouter({
 
       return { posts, user };
     }),
-  getAdditionalData: publicProcedure
-    .input(z.object({ postId: z.number() }))
-    .query(async ({ ctx, input }) => {
-      const comments = await ctx.prisma.comment.findMany({
-        where: {
-          postId: input.postId,
-        },
-      });
-
-      const users = (
-        await clerkClient.users.getUserList({
-          userId: comments.map((comment) => comment.userId),
-        })
-      ).map(filterUserForClient);
-
-      if (!users)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Couldn't find users",
-        });
-
-      if (comments) {
-        return comments.map((comment) => ({
-          comment,
-          author: users.find((user) => user.id === comment.userId),
-        }));
-      }
-    }),
   addItem: publicProcedure
     .input(z.object({ text: z.string(), authorId: z.string() }))
     .mutation(async ({ ctx, input }) => {
