@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/nextjs";
 import PostsItemActionbar from "~/components/Posts/PostItem/PostsItemActionbar";
 import PostComments from "~/components/Posts/comments/PostComments";
-import ProfileImage from "~/components/ui/ProfileImage";
+import UserImage from "~/components/ui/UserImage";
 import PostItemHeader from "~/components/Posts/PostItem/PostItemHeader";
 import { api, type RouterOutputs } from "~/utils/api";
 
@@ -19,7 +19,7 @@ const PostsItem = ({ post, author }: Props) => {
   return (
     <article className="mb-6 max-w-3xl rounded rounded-2xl bg-white p-4 shadow">
       <div className="flex " id="post-card-header">
-        <ProfileImage
+        <UserImage
           size={16}
           username={author.username}
           imgUrl={author.profileImageUrl}

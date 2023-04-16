@@ -1,5 +1,5 @@
 import { LoadingSpinner } from "~/components/ui/Loading";
-import ProfileImage from "~/components/ui/ProfileImage";
+import UserImage from "~/components/ui/UserImage";
 import PostCommentsLikes from "~/components/Posts/comments/PostCommentsLikes";
 import PostCommentHeader from "~/components/Posts/comments/PostCommentHeader";
 import { api } from "~/utils/api";
@@ -18,7 +18,7 @@ const PostCommentsList = ({ postId }: { postId: number }) => {
             className="mt-2 grid grid-cols-[auto_1fr] grid-rows-[auto_auto]"
             key={comment.id}
           >
-            <ProfileImage
+            <UserImage
               size={10}
               username={author?.username ?? ""}
               imgUrl={author?.profileImageUrl ?? ""}

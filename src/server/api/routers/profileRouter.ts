@@ -1,12 +1,11 @@
 import { z } from "zod";
-
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { clerkClient } from "@clerk/nextjs/api";
 import { TRPCError } from "@trpc/server";
+import { clerkClient } from "@clerk/nextjs/api";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { filterUserForClientWithDetails } from "~/server/helpers/clientFilters";
 
 export const profileRouter = createTRPCRouter({
-  // This is not used at the moment, but might be usefull in the future
+  // Will be used on Profile Page for following, followers, BIO
   getUserByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {

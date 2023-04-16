@@ -1,5 +1,5 @@
+import PostsItem from "~/components/Posts/PostItem/PostsItem";
 import { type RouterOutputs } from "~/utils/api";
-import PostsItem from "~/components/Posts/PostsItem";
 
 type Props = RouterOutputs["posts"]["getByUsername"];
 

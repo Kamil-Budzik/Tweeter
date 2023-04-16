@@ -1,11 +1,10 @@
 import { type FC, type ReactNode } from "react";
-import { AiFillHome, AiFillCompass } from "react-icons/ai";
-import { BsFillBookmarkFill } from "react-icons/bs";
 import Link from "next/link";
+import { UserButton } from "@clerk/clerk-react";
+import { BsFillBookmarkFill } from "react-icons/bs";
+import { AiFillHome, AiFillCompass } from "react-icons/ai";
 import MobileLogo from "~/assets/icons/tweeter-small";
 import DesktopLogo from "~/assets/icons/tweeter";
-
-import { UserButton } from "@clerk/clerk-react";
 
 interface Props {
   children?: ReactNode;

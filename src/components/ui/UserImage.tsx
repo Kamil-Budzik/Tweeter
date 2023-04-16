@@ -6,7 +6,7 @@ interface Props {
   imgUrl: string;
 }
 
-const ProfileImage = ({ size, username, imgUrl }: Props) => (
+const UserImage = ({ size, username, imgUrl }: Props) => (
   <Link href={`/profile/${username}`}>
     <div className={`mr-2 h-${size} w-${size} rounded-2xl bg-[#BDBDBD]`}>
       <img
@@ -18,4 +18,4 @@ const ProfileImage = ({ size, username, imgUrl }: Props) => (
   </Link>
 );
 
-export default ProfileImage;
+export default UserImage;

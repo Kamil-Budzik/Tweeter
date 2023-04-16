@@ -1,10 +1,8 @@
 import { z } from "zod";
-
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { clerkClient } from "@clerk/nextjs/api";
 import { TRPCError } from "@trpc/server";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { filterUserForClient } from "~/server/helpers/clientFilters";
-import { useUser } from "@clerk/nextjs";
 
 export const commentsRouter = createTRPCRouter({
   getByPostId: publicProcedure
