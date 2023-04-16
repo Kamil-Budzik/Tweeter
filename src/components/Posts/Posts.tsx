@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import { api } from "~/utils/api";
 import { LoadingPage } from "~/components/ui/Loading";
-import PostsItem from "~/components/Posts/PostsItem";
+import PostsItem from "~/components/Posts/PostItem/PostsItem";
 import TweetForm from "~/components/Posts/TweetForm";
 
 const Posts: NextPage = () => {

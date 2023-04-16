@@ -1,8 +1,8 @@
 import { useUser } from "@clerk/nextjs";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { api } from "~/utils/api";
 import { LoadingSpinner } from "~/components/ui/Loading";
 import { Button } from "~/components/ui/Button";
+import { api } from "~/utils/api";
 
 type Inputs = {
   post: string;

@@ -1,12 +1,12 @@
-import { api, type RouterOutputs } from "~/utils/api";
-import dayjs from "dayjs";
-import Link from "next/link";
-import PostsItemActionbar from "~/components/Posts/PostsItemActionbar";
 import { useUser } from "@clerk/nextjs";
+import PostsItemActionbar from "~/components/Posts/PostItem/PostsItemActionbar";
 import PostComments from "~/components/Posts/comments/PostComments";
 import ProfileImage from "~/components/ui/ProfileImage";
+import PostItemHeader from "~/components/Posts/PostItem/PostItemHeader";
+import { api, type RouterOutputs } from "~/utils/api";
 
 type Props = RouterOutputs["posts"]["getAll"][number];
+
 const PostsItem = ({ post, author }: Props) => {
   const { user } = useUser();
   const { data: comments } = api.comments.getByPostId.useQuery({
@@ -24,24 +24,16 @@ const PostsItem = ({ post, author }: Props) => {
           username={author.username}
           imgUrl={author.profileImageUrl}
         />
-
-        <div className="ml-3">
-          <Link href={`/profile/${author.username}`}>
-            <header className="text-lg font-semibold hover:underline">
-              {author.username}
-            </header>
-          </Link>
-          <p className="text-sm font-semibold text-[#BDBDBD]">
-            {dayjs(post.createdAt).format("DD MMMM HH:mm")}
-          </p>
-        </div>
+        <PostItemHeader username={author.username} createdAt={post.createdAt} />
       </div>
+
       <div id="post-card-content" className="my-4 text-[#4F4F4F]">
         <p>{post.content}</p>
       </div>
 
       <div>{post.likes.length} Likes</div>
       <div>{comments?.length} comments</div>
+
       <PostsItemActionbar isLiked={!!isLiked} postId={post.id} />
       <PostComments postId={post.id} />
     </article>

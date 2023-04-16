@@ -1,7 +1,7 @@
 import { BiComment, BiRefresh } from "react-icons/bi";
 import { AiOutlineHeart } from "react-icons/ai";
 import { FaRegBookmark } from "react-icons/fa";
-import { ITEMS_ACTION } from "./Posts.types";
+import { ITEMS_ACTION } from "../Posts.types";
 import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
 import { LoadingSpinner } from "~/components/ui/Loading";
