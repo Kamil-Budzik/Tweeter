@@ -15,6 +15,9 @@ export const commentsRouter = createTRPCRouter({
           postId: input.postId,
         },
         orderBy: [{ createdAt: "desc" }],
+        include: {
+          likes: true,
+        },
       });
 
       const users = (
@@ -57,5 +60,30 @@ export const commentsRouter = createTRPCRouter({
           id: input.id,
         },
       });
+    }),
+  toggleLike: publicProcedure
+    .input(
+      z.object({
+        isLiked: z.boolean(),
+        userId: z.string(),
+        commentId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (input.isLiked) {
+        await ctx.prisma.commentLike.deleteMany({
+          where: {
+            userId: input.userId,
+            commentId: input.commentId,
+          },
+        });
+      } else {
+        await ctx.prisma.commentLike.create({
+          data: {
+            userId: input.userId,
+            commentId: input.commentId,
+          },
+        });
+      }
     }),
 });
