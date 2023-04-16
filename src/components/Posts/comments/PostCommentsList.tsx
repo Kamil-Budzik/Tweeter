@@ -6,6 +6,7 @@ import ProfileImage from "~/components/ui/ProfileImage";
 
 import { BsFillTrash3Fill } from "react-icons/bs";
 import { useUser } from "@clerk/nextjs";
+import PostCommentsLikes from "~/components/Posts/comments/PostCommentsLikes";
 
 const PostCommentsList = ({ postId }: { postId: number }) => {
   const { data, isLoading } = api.comments.getByPostId.useQuery({ postId });
@@ -24,13 +25,16 @@ const PostCommentsList = ({ postId }: { postId: number }) => {
     <>
       <ul className="border-t border-[#F2F2F2]">
         {data.map(({ comment, author }) => (
-          <li className="mt-2 flex" key={comment.id}>
+          <li
+            className="mt-2 grid grid-cols-[auto_1fr] grid-rows-[auto_auto]"
+            key={comment.id}
+          >
             <ProfileImage
               size={10}
               username={author?.username ?? ""}
               imgUrl={author?.profileImageUrl ?? ""}
             />
-            <div className="flex-grow break-all rounded bg-[#FAFAFA] p-2 pb-4 text-[#4F4F4F] shadow">
+            <div className="break-all rounded bg-[#FAFAFA] p-2 pb-4 text-[#4F4F4F] shadow">
               <div className="flex items-center text-[#BDBDBD]">
                 <Link href={`/profile/${author!.username}`}>
                   <span className="mr-2 font-semibold text-black hover:underline">
@@ -47,6 +51,11 @@ const PostCommentsList = ({ postId }: { postId: number }) => {
               </div>
               {comment.content}
             </div>
+            <PostCommentsLikes
+              likes={comment.likes}
+              postId={postId}
+              commentId={comment.id}
+            />
           </li>
         ))}
       </ul>
