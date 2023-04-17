@@ -12,12 +12,13 @@ datasource db {
 }
 
 model Post {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  content   String    @db.LongText
+  id        Int         @id @default(autoincrement())
+  createdAt DateTime    @default(now())
+  content   String      @db.LongText
   authorId  String
   likes     Like[]
   comments  Comment[]
+  saves     SavedPost[]
 
   @@index([authorId])
 }
@@ -52,4 +53,14 @@ model CommentLike {
   userId    String
 
   @@index([commentId, id])
+}
+
+model SavedPost {
+  id     Int    @id @default(autoincrement())
+  postId Int
+  post   Post   @relation(fields: [postId], references: [id])
+  userId String
+
+  @@index([postId])
+  @@index([userId])
 }

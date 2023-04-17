@@ -58,6 +58,20 @@ export const postsRouter = createTRPCRouter({
 
       return { posts, user };
     }),
+  getSavedById: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const savedPosts = await ctx.prisma.savedPost.findMany({
+        where: {
+          userId: input.userId,
+        },
+        include: {
+          post: { include: { likes: true } },
+        },
+      });
+
+      return savedPosts.map((post) => post.post);
+    }),
   addItem: publicProcedure
     .input(z.object({ text: z.string(), authorId: z.string() }))
     .mutation(async ({ ctx, input }) => {
