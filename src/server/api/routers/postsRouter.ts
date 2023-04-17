@@ -14,6 +14,7 @@ export const postsRouter = createTRPCRouter({
       orderBy: [{ createdAt: "desc" }],
       include: {
         likes: true,
+        saves: true,
       },
     });
     const users = (
@@ -53,6 +54,7 @@ export const postsRouter = createTRPCRouter({
         orderBy: [{ createdAt: "desc" }],
         include: {
           likes: true,
+          saves: true,
         },
       });
 
@@ -61,16 +63,41 @@ export const postsRouter = createTRPCRouter({
   getSavedById: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
+      const users = (
+        await clerkClient.users.getUserList({
+          limit: 100,
+        })
+      ).map(filterUserForClient);
+
       const savedPosts = await ctx.prisma.savedPost.findMany({
         where: {
           userId: input.userId,
         },
         include: {
-          post: { include: { likes: true } },
+          post: {
+            include: {
+              likes: true,
+              saves: true,
+              comments: true,
+            },
+          },
         },
       });
 
-      return savedPosts.map((post) => post.post);
+      return savedPosts.map((post) => ({
+        post,
+        author: users.find((user) => user.id === post.post.authorId),
+      }));
+    }),
+  saveItem: publicProcedure
+    .input(z.object({ userId: z.string(), postId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.savedPost.create({
+        data: {
+          postId: input.postId,
+          userId: input.userId,
+        },
+      });
     }),
   addItem: publicProcedure
     .input(z.object({ text: z.string(), authorId: z.string() }))
