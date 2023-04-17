@@ -15,6 +15,7 @@ const PostsItem = ({ post, author }: Props) => {
   if (!post || !author) return <div />;
 
   const isLiked = post.likes.find((like) => like.userId === user?.id);
+  const isSaved = post.saves.find((save) => save.userId === user?.id);
 
   return (
     <article className="mb-6 max-w-3xl rounded rounded-2xl bg-white p-4 shadow">
@@ -34,7 +35,11 @@ const PostsItem = ({ post, author }: Props) => {
       <div>{post.likes.length} Likes</div>
       <div>{comments?.length} comments</div>
 
-      <PostsItemActionbar isLiked={!!isLiked} postId={post.id} />
+      <PostsItemActionbar
+        isLiked={!!isLiked}
+        postId={post.id}
+        isSaved={!!isSaved}
+      />
       <PostComments postId={post.id} />
     </article>
   );

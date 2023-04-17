@@ -1,7 +1,7 @@
 import Layout from "~/components/layouts/Layout";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import { api } from "~/utils/api";
-import ProfileTweets from "~/components/Profile/ProfileTweets";
+import PostsItem from "~/components/Posts/PostItem/PostsItem";
 
 const Bookmarks = () => {
   const { isSignedIn, user } = useUser();
@@ -41,7 +41,13 @@ const Bookmarks = () => {
   return (
     <Layout>
       <div className="mt-8">
-        <ProfileTweets posts={data} user={author} />
+        {data.map((item) => (
+          <PostsItem
+            post={item.post.post}
+            author={item.author}
+            key={item.post.id}
+          />
+        ))}
       </div>
     </Layout>
   );

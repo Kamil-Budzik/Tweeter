@@ -9,22 +9,30 @@ import { LoadingSpinner } from "~/components/ui/Loading";
 interface Props {
   isLiked: boolean;
   postId: number;
+  isSaved: boolean;
 }
-const PostsItemActionbar = ({ isLiked, postId }: Props) => {
+const PostsItemActionbar = ({ isLiked, postId, isSaved }: Props) => {
   const ctx = api.useContext();
-  const { mutate, isLoading } = api.posts.toggleLike.useMutation({
+  const { mutate: toggleLike, isLoading } = api.posts.toggleLike.useMutation({
     onSuccess: () => {
       void ctx.posts.getAll.invalidate();
       void ctx.posts.getByUsername.invalidate();
     },
   });
+  const { mutate: savePost } = api.posts.saveItem.useMutation({
+    onSuccess: () => {
+      void ctx.posts.getAll.invalidate();
+      void ctx.posts.getByUsername.invalidate();
+    },
+  });
+
   const { user } = useUser();
 
   const handleClick = (action: ITEMS_ACTION) => {
+    if (!user) return;
     switch (action) {
       case ITEMS_ACTION.LIKE:
-        if (!user) return;
-        mutate({ isLiked: isLiked, postId, userId: user?.id });
+        toggleLike({ isLiked: isLiked, postId, userId: user?.id });
         break;
       case ITEMS_ACTION.RETWEET:
         console.log("RETWEET");
@@ -33,7 +41,7 @@ const PostsItemActionbar = ({ isLiked, postId }: Props) => {
         console.log("Comment");
         break;
       case ITEMS_ACTION.BOOKMARK:
-        console.log("Bookmark a post");
+        savePost({ userId: user?.id, postId });
         break;
       default:
         return;
@@ -86,7 +94,9 @@ const PostsItemActionbar = ({ isLiked, postId }: Props) => {
 
       {/*SAVE*/}
       <li
-        className={`mt-1 flex w-1/4 cursor-pointer items-center justify-center rounded py-3 transition duration-300 hover:bg-blue-300 hover:text-blue-600`}
+        className={`mt-1 flex w-1/4 cursor-pointer items-center justify-center rounded py-3 transition duration-300 ${
+          isSaved ? "text-blue-600" : "hover:bg-blue-300 hover:text-blue-600"
+        }`}
         onClick={() => handleClick(ITEMS_ACTION.BOOKMARK)}
       >
         <FaRegBookmark />
