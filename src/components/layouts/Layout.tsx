@@ -5,12 +5,23 @@ import { BsFillBookmarkFill } from "react-icons/bs";
 import { AiFillHome, AiFillCompass } from "react-icons/ai";
 import MobileLogo from "~/assets/icons/tweeter-small";
 import DesktopLogo from "~/assets/icons/tweeter";
+import { useRouter } from "next/router";
+import * as path from "path";
+import { act } from "react-dom/test-utils";
 
 interface Props {
   children?: ReactNode;
 }
 
 const Layout: FC<Props> = (props) => {
+  const router = useRouter();
+  const pathname = router.pathname;
+
+  let activeRoute = "home";
+
+  if (pathname === "/explore") activeRoute = "explore";
+  if (pathname === "/bookmarks") activeRoute = "bookmarks";
+
   return (
     <div className="fixed left-0 right-0 top-0">
       <div className="flex items-center justify-between p-2">
@@ -19,18 +30,37 @@ const Layout: FC<Props> = (props) => {
           <DesktopLogo />
         </Link>
         <ul className="hidden md:flex">
-          <li className="font-semibold text-blue-500">
-            <Link href="/" className="mx-10 border-b-2 border-blue-500">
+          <li>
+            <Link
+              href="/"
+              className={`mx-10 ${
+                activeRoute === "home"
+                  ? "border-b-2 border-blue-500 font-semibold text-blue-500"
+                  : "text-[#828282]"
+              }`}
+            >
               HOME
             </Link>
           </li>
           <li className="text-[#828282]">
-            <Link href="/" className="mx-10">
+            <Link
+              href="/"
+              className={`mx-10 ${
+                pathname === "/explore" ? "text-blue-500" : ""
+              }`}
+            >
               Explore
             </Link>
           </li>
           <li className="text-[#828282]">
-            <Link href="/bookmarks" className="mx-10">
+            <Link
+              href="/bookmarks"
+              className={`mx-10 ${
+                activeRoute === "bookmarks"
+                  ? "border-b-2 border-blue-500 font-semibold text-blue-500"
+                  : ""
+              }`}
+            >
               Bookmarks
             </Link>
           </li>
@@ -45,21 +75,31 @@ const Layout: FC<Props> = (props) => {
       <nav className="fixed bottom-0 left-0 right-0 flex bg-white md:hidden">
         <Link
           href="/"
-          className="flex h-14 w-1/3 items-center justify-center border-b-2 border-blue-500 text-2xl"
+          className={`flex h-14 w-1/3 items-center justify-center text-2xl ${
+            activeRoute === "home" ? " border-b-2 border-blue-500 " : ""
+          }`}
         >
-          <AiFillHome fill="#3b82f6" />
+          <AiFillHome fill={activeRoute === "home" ? "#3b82f6" : "#828282"} />
         </Link>
         <Link
           href="/"
-          className="flex h-14 w-1/3 items-center justify-center text-2xl"
+          className={`flex h-14 w-1/3 items-center justify-center text-2xl ${
+            activeRoute === "explore" ? " border-b-2 border-blue-500 " : ""
+          }`}
         >
-          <AiFillCompass fill="#828282" />
+          <AiFillCompass
+            fill={activeRoute === "explore" ? "#3b82f6" : "#828282"}
+          />
         </Link>
         <Link
           href="/bookmarks"
-          className="flex h-14 w-1/3 items-center justify-center text-2xl"
+          className={`flex h-14 w-1/3 items-center justify-center text-2xl ${
+            activeRoute === "bookmarks" ? " border-b-2 border-blue-500 " : ""
+          }`}
         >
-          <BsFillBookmarkFill fill="#828282" />
+          <BsFillBookmarkFill
+            fill={activeRoute === "bookmarks" ? "#3b82f6" : "#828282"}
+          />
         </Link>
       </nav>
     </div>
