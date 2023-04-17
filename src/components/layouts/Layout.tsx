@@ -30,7 +30,7 @@ const Layout: FC<Props> = (props) => {
             </Link>
           </li>
           <li className="text-[#828282]">
-            <Link href="/" className="mx-10">
+            <Link href="/bookmarks" className="mx-10">
               Bookmarks
             </Link>
           </li>
@@ -56,7 +56,7 @@ const Layout: FC<Props> = (props) => {
           <AiFillCompass fill="#828282" />
         </Link>
         <Link
-          href="/"
+          href="/bookmarks"
           className="flex h-14 w-1/3 items-center justify-center text-2xl"
         >
           <BsFillBookmarkFill fill="#828282" />
