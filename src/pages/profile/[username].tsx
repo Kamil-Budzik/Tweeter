@@ -3,10 +3,10 @@ import Head from "next/head";
 import Link from "next/link";
 import Layout from "~/components/layouts/Layout";
 import { Button } from "~/components/ui/Button";
-import useProfile, { ACTIVE_FILTER } from "~/hooks/useProfile";
+import useProfile from "~/hooks/useProfile";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  const { data, filters, setFilters } = useProfile(username);
+  const { data, filter, navItems } = useProfile(username);
 
   if (!data)
     return (
@@ -44,53 +44,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           profileImageUrl={user.profileImageUrl}
         />
         <section className="content-wrapper md:grid md:grid-cols-[350px_1fr]">
-          <nav className="profile-margins mb-6 py-4 md:py-0 ">
-            <ul className="flex h-48 flex-col justify-evenly rounded-2xl  bg-white font-semibold text-[#828282] shadow">
-              <li
-                className={
-                  filters === ACTIVE_FILTER.TWEETS
-                    ? "active-nav-item"
-                    : "cursor-pointer"
-                }
-                onClick={() => setFilters(ACTIVE_FILTER.TWEETS)}
-              >
-                <p className="ml-2">Tweets</p>
-              </li>
-              <li
-                className={
-                  filters === ACTIVE_FILTER.REPLIES
-                    ? "active-nav-item"
-                    : "cursor-pointer"
-                }
-                onClick={() => setFilters(ACTIVE_FILTER.REPLIES)}
-              >
-                <p className="ml-2">Tweets & replies</p>
-              </li>
-              <li
-                className={
-                  filters === ACTIVE_FILTER.MEDIA
-                    ? "active-nav-item"
-                    : "cursor-pointer"
-                }
-                onClick={() => setFilters(ACTIVE_FILTER.MEDIA)}
-              >
-                <p className="ml-2">Media</p>
-              </li>
-              <li
-                className={
-                  filters === ACTIVE_FILTER.LIKES
-                    ? "active-nav-item"
-                    : "cursor-pointer"
-                }
-                onClick={() => setFilters(ACTIVE_FILTER.LIKES)}
-              >
-                <p className="ml-2">Likes</p>
-              </li>
-            </ul>
-          </nav>
-          <div className="mx-8 md:ml-0 md:mr-12 lg:mr-16">
-            <ProfileTweets posts={posts} user={user} />
-          </div>
+          <Filters activeFilter={filter} items={navItems} />
+          <ProfileTweets posts={posts} user={user} />
         </section>
       </Layout>
     </>
@@ -103,6 +58,7 @@ import { appRouter } from "~/server/api/root";
 import superjson from "superjson";
 import ProfileHeader from "~/components/Profile/ProfileHeader";
 import ProfileTweets from "~/components/Profile/ProfileTweets";
+import Filters from "~/components/ui/Filters";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({

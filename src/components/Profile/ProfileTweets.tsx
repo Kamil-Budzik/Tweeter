@@ -16,7 +16,7 @@ const ProfileTweets = ({ posts, user }: Props) => {
   }
 
   return (
-    <section>
+    <section className="mx-8 md:ml-0 md:mr-12 lg:mr-16">
       <div>
         {posts.map((post) => (
           <PostsItem post={post} key={post.id} author={user} />
