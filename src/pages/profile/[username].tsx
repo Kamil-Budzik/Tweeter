@@ -44,8 +44,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           profileImageUrl={user.profileImageUrl}
         />
         <section className="content-wrapper md:grid md:grid-cols-[350px_1fr]">
-          <nav className="profile-margins md:py-0flex mb-6 max-h-48 max-w-3xl flex-col justify-center rounded-2xl bg-white py-4 shadow">
-            <ul className="flex flex-col gap-3 font-semibold text-[#828282]">
+          <nav className="profile-margins mb-6 py-4 md:py-0 ">
+            <ul className="flex h-48 flex-col justify-evenly rounded-2xl  bg-white font-semibold text-[#828282] shadow">
               <li
                 className={
                   filters === ACTIVE_FILTER.TWEETS
