@@ -1,12 +1,17 @@
-import Layout from "~/components/layouts/Layout";
 import { SignInButton, useUser } from "@clerk/nextjs";
-import { api } from "~/utils/api";
+import Layout from "~/components/layouts/Layout";
 import PostsItem from "~/components/Posts/PostItem/PostsItem";
+import { LoadingPage } from "~/components/ui/Loading";
+import ErrorPage from "~/components/ui/Error";
+import { api } from "~/utils/api";
 
 const Bookmarks = () => {
   const { isSignedIn, user } = useUser();
   if (!user) return <div />;
-  const { data } = api.posts.getSavedById.useQuery({ userId: user?.id });
+
+  const { data, isLoading } = api.posts.getSavedById.useQuery({
+    userId: user?.id,
+  });
 
   if (!isSignedIn)
     return (
@@ -21,16 +26,10 @@ const Bookmarks = () => {
       </Layout>
     );
 
-  if (!data) {
-    return (
-      <div>
-        <h1>
-          Sorry, but we {`couldn't`} load your data. Please refresh the the page
-          or contact our support!
-        </h1>
-      </div>
-    );
-  }
+  if (isLoading) return <LoadingPage />;
+
+  if (!data) return <ErrorPage />;
+
   // TODO handle empty array later on
 
   return (
