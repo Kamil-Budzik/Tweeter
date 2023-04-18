@@ -3,12 +3,10 @@ import Head from "next/head";
 import Link from "next/link";
 import Layout from "~/components/layouts/Layout";
 import { Button } from "~/components/ui/Button";
-import { api } from "~/utils/api";
+import useProfile, { ACTIVE_FILTER } from "~/hooks/useProfile";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  const { data } = api.posts.getByUsername.useQuery({
-    username,
-  });
+  const { data, filters, setFilters } = useProfile(username);
 
   if (!data)
     return (
@@ -31,7 +29,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     );
 
   const { user, posts } = data;
-
+  // TODO nav will be moved to a new component due to it's reusability, you might face some reactivity issue because of it!
   return (
     <>
       <Head>
@@ -45,7 +43,55 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           followers={10800}
           profileImageUrl={user.profileImageUrl}
         />
-        <ProfileTweets posts={posts} user={user} />
+        <section className="content-wrapper md:grid md:grid-cols-[350px_1fr]">
+          <nav className="profile-margins md:py-0flex mb-6 max-h-48 max-w-3xl flex-col justify-center rounded-2xl bg-white py-4 shadow">
+            <ul className="flex flex-col gap-3 font-semibold text-[#828282]">
+              <li
+                className={
+                  filters === ACTIVE_FILTER.TWEETS
+                    ? "active-nav-item"
+                    : "cursor-pointer"
+                }
+                onClick={() => setFilters(ACTIVE_FILTER.TWEETS)}
+              >
+                <p className="ml-2">Tweets</p>
+              </li>
+              <li
+                className={
+                  filters === ACTIVE_FILTER.REPLIES
+                    ? "active-nav-item"
+                    : "cursor-pointer"
+                }
+                onClick={() => setFilters(ACTIVE_FILTER.REPLIES)}
+              >
+                <p className="ml-2">Tweets & replies</p>
+              </li>
+              <li
+                className={
+                  filters === ACTIVE_FILTER.MEDIA
+                    ? "active-nav-item"
+                    : "cursor-pointer"
+                }
+                onClick={() => setFilters(ACTIVE_FILTER.MEDIA)}
+              >
+                <p className="ml-2">Media</p>
+              </li>
+              <li
+                className={
+                  filters === ACTIVE_FILTER.LIKES
+                    ? "active-nav-item"
+                    : "cursor-pointer"
+                }
+                onClick={() => setFilters(ACTIVE_FILTER.LIKES)}
+              >
+                <p className="ml-2">Likes</p>
+              </li>
+            </ul>
+          </nav>
+          <div className="mx-8 md:ml-0 md:mr-12 lg:mr-16">
+            <ProfileTweets posts={posts} user={user} />
+          </div>
+        </section>
       </Layout>
     </>
   );

@@ -18,7 +18,7 @@ const PostsItem = ({ post, author }: Props) => {
   const isSaved = post.saves.find((save) => save.userId === user?.id);
 
   return (
-    <article className="mb-6 max-w-3xl rounded rounded-2xl bg-white p-4 shadow">
+    <article className="mb-6 max-w-3xl rounded-2xl bg-white p-4 shadow">
       <div className="flex " id="post-card-header">
         <UserImage
           size={16}

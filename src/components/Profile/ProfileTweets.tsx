@@ -16,8 +16,8 @@ const ProfileTweets = ({ posts, user }: Props) => {
   }
 
   return (
-    <section className="content-wrapper">
-      <div className="profile-margins">
+    <section>
+      <div>
         {posts.map((post) => (
           <PostsItem post={post} key={post.id} author={user} />
         ))}

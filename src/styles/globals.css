@@ -17,3 +17,7 @@
 .profile-margins {
     @apply mx-8 md:mx-12 lg:mx-16;
 }
+
+.active-nav-item {
+    @apply relative w-full text-blue-500 after:absolute after:inset-y-0 after:left-0 after:w-[3px] after:bg-blue-500 after:content-[''] after:rounded;
+}
