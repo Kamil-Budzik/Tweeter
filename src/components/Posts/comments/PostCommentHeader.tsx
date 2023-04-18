@@ -29,9 +29,7 @@ const PostCommentHeader = ({
   return (
     <div className="flex items-center text-[#BDBDBD]">
       <Link href={`/profile/${username}`}>
-        <span className="mr-2 font-semibold text-black hover:underline">
-          {username}
-        </span>
+        <span className="mr-2 text-black hover:underline">{username}</span>
       </Link>
       {dayjs(createdAt).format("DD MMMM HH:mm")}
       {user?.id === authorId && (

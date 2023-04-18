@@ -89,15 +89,26 @@ export const postsRouter = createTRPCRouter({
         author: users.find((user) => user.id === post.post.authorId),
       }));
     }),
-  saveItem: publicProcedure
-    .input(z.object({ userId: z.string(), postId: z.number() }))
+  toggleSave: publicProcedure
+    .input(
+      z.object({ isSaved: z.boolean(), userId: z.string(), postId: z.number() })
+    )
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.savedPost.create({
-        data: {
-          postId: input.postId,
-          userId: input.userId,
-        },
-      });
+      if (input.isSaved) {
+        await ctx.prisma.savedPost.deleteMany({
+          where: {
+            postId: input.postId,
+            userId: input.userId,
+          },
+        });
+      } else {
+        await ctx.prisma.savedPost.create({
+          data: {
+            postId: input.postId,
+            userId: input.userId,
+          },
+        });
+      }
     }),
   addItem: publicProcedure
     .input(z.object({ text: z.string(), authorId: z.string() }))

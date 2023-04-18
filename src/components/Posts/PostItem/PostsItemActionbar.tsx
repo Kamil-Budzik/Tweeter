@@ -13,20 +13,22 @@ interface Props {
 }
 const PostsItemActionbar = ({ isLiked, postId, isSaved }: Props) => {
   const ctx = api.useContext();
-  const { mutate: toggleLike, isLoading } = api.posts.toggleLike.useMutation({
-    onSuccess: () => {
-      void ctx.posts.getAll.invalidate();
-      void ctx.posts.getByUsername.invalidate();
-    },
-  });
-  const { mutate: savePost } = api.posts.saveItem.useMutation({
-    onSuccess: () => {
-      void ctx.posts.getAll.invalidate();
-      void ctx.posts.getByUsername.invalidate();
-    },
-  });
-
   const { user } = useUser();
+
+  const { mutate: toggleLike, isLoading: isLoadingLike } =
+    api.posts.toggleLike.useMutation({
+      onSuccess: () => invalidateQueries(),
+    });
+  const { mutate: savePost, isLoading: isLoadingSave } =
+    api.posts.toggleSave.useMutation({
+      onSuccess: () => invalidateQueries(),
+    });
+
+  const invalidateQueries = () => {
+    void ctx.posts.getAll.invalidate();
+    void ctx.posts.getByUsername.invalidate();
+    void ctx.posts.getSavedById.invalidate({ userId: user?.id });
+  };
 
   const handleClick = (action: ITEMS_ACTION) => {
     if (!user) return;
@@ -37,11 +39,8 @@ const PostsItemActionbar = ({ isLiked, postId, isSaved }: Props) => {
       case ITEMS_ACTION.RETWEET:
         console.log("RETWEET");
         break;
-      case ITEMS_ACTION.COMMENT:
-        console.log("Comment");
-        break;
       case ITEMS_ACTION.BOOKMARK:
-        savePost({ userId: user?.id, postId });
+        savePost({ isSaved: isSaved, userId: user?.id, postId });
         break;
       default:
         return;
@@ -80,7 +79,7 @@ const PostsItemActionbar = ({ isLiked, postId, isSaved }: Props) => {
         }`}
         onClick={() => handleClick(ITEMS_ACTION.LIKE)}
       >
-        {isLoading ? (
+        {isLoadingLike ? (
           <LoadingSpinner size={15} />
         ) : (
           <>
@@ -99,8 +98,16 @@ const PostsItemActionbar = ({ isLiked, postId, isSaved }: Props) => {
         }`}
         onClick={() => handleClick(ITEMS_ACTION.BOOKMARK)}
       >
-        <FaRegBookmark />
-        <p className="ml-2 hidden text-sm md:block">Save</p>
+        {isLoadingSave ? (
+          <LoadingSpinner size={15} />
+        ) : (
+          <>
+            <FaRegBookmark />
+            <p className="ml-2 hidden text-sm md:block">
+              {isSaved ? "Saved" : "Save"}
+            </p>
+          </>
+        )}
       </li>
     </ul>
   );

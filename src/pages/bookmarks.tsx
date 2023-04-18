@@ -6,12 +6,6 @@ import PostsItem from "~/components/Posts/PostItem/PostsItem";
 const Bookmarks = () => {
   const { isSignedIn, user } = useUser();
   if (!user) return <div />;
-  const author = {
-    id: user.id,
-    username: user.username!,
-    profileImageUrl: user.profileImageUrl,
-    bio: "",
-  };
   const { data } = api.posts.getSavedById.useQuery({ userId: user?.id });
 
   if (!isSignedIn)
@@ -37,10 +31,12 @@ const Bookmarks = () => {
       </div>
     );
   }
+  // TODO handle empty array later on
 
   return (
     <Layout>
       <div className="mt-8">
+        {!data.length && <section>You {"don't"} have any saved tweets</section>}
         {data.map((item) => (
           <PostsItem
             post={item.post.post}

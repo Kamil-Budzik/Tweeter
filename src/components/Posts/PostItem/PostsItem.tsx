@@ -34,7 +34,7 @@ const PostsItem = ({ post, author }: Props) => {
 
       <div>{post.likes.length} Likes</div>
       <div>{comments?.length} comments</div>
-
+      <div>{post.saves?.length} Saves</div>
       <PostsItemActionbar
         isLiked={!!isLiked}
         postId={post.id}
