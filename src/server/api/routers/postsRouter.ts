@@ -9,6 +9,38 @@ import {
 import { ACTIVE_FILTER } from "~/hooks/useProfile";
 
 export const postsRouter = createTRPCRouter({
+  getWithFilters: publicProcedure
+    .input(z.object({ userId: z.string(), activeFilter: z.string() }))
+    .query(async ({ ctx, input }) => {
+      if (input.activeFilter === ACTIVE_FILTER.LIKES) {
+        const likedPosts = await ctx.prisma.like.findMany({
+          where: {
+            userId: input.userId,
+          },
+          select: {
+            post: {
+              include: {
+                likes: true,
+                saves: true,
+                comments: true,
+              },
+            },
+          },
+        });
+
+        const users = (
+          await clerkClient.users.getUserList({
+            userId: likedPosts.map((like) => like.post.authorId),
+            limit: 100,
+          })
+        ).map(filterUserForClient);
+
+        return likedPosts.map((like) => ({
+          post: like.post,
+          author: users.find((user) => user.id === like.post.authorId),
+        }));
+      }
+    }),
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
       take: 100,
@@ -32,7 +64,7 @@ export const postsRouter = createTRPCRouter({
     }));
   }),
   getByUsername: publicProcedure
-    .input(z.object({ username: z.string(), activeFilter: z.string() }))
+    .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
       const users = (
         await clerkClient.users.getUserList({
@@ -48,28 +80,6 @@ export const postsRouter = createTRPCRouter({
           message: "Couldn't find user with given id",
         });
 
-      if (input.activeFilter === ACTIVE_FILTER.LIKES) {
-        const likedPosts = await ctx.prisma.like.findMany({
-          where: {
-            userId: user.id,
-          },
-          select: {
-            post: {
-              include: {
-                likes: true,
-                saves: true,
-                comments: true,
-              },
-            },
-          },
-        });
-
-        return {
-          posts: likedPosts.map((like) => like.post),
-          user,
-        };
-      }
-
       const posts = await ctx.prisma.post.findMany({
         where: {
           authorId: user.id,
@@ -79,6 +89,7 @@ export const postsRouter = createTRPCRouter({
         include: {
           likes: true,
           saves: true,
+          comments: true,
         },
       });
 

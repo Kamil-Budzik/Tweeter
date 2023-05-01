@@ -3,7 +3,15 @@ import Head from "next/head";
 import Link from "next/link";
 import Layout from "~/components/layouts/Layout";
 import { Button } from "~/components/ui/Button";
-import useProfile from "~/hooks/useProfile";
+import useProfile, { ACTIVE_FILTER } from "~/hooks/useProfile";
+import { prisma } from "~/server/db";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { appRouter } from "~/server/api/root";
+import superjson from "superjson";
+import ProfileHeader from "~/components/Profile/ProfileHeader";
+import ProfileTweets from "~/components/Profile/ProfileTweets";
+import Filters from "~/components/ui/Filters";
+import ProfileFilteredTweets from "~/components/Profile/ProfileFilteredTweets";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data, filter, navItems } = useProfile(username);
@@ -45,20 +53,16 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         />
         <section className="content-wrapper md:grid md:grid-cols-[350px_1fr]">
           <Filters activeFilter={filter} items={navItems} />
-          <ProfileTweets posts={posts} user={user} />
+          {filter === ACTIVE_FILTER.TWEETS ? (
+            <ProfileTweets posts={posts} user={user} />
+          ) : (
+            <ProfileFilteredTweets filter={filter} userId={user.id} />
+          )}
         </section>
       </Layout>
     </>
   );
 };
-
-import { prisma } from "~/server/db";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import { appRouter } from "~/server/api/root";
-import superjson from "superjson";
-import ProfileHeader from "~/components/Profile/ProfileHeader";
-import ProfileTweets from "~/components/Profile/ProfileTweets";
-import Filters from "~/components/ui/Filters";
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createProxySSGHelpers({
@@ -72,7 +76,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   if (typeof username !== "string") throw new Error("no username");
 
-  await ssg.posts.getByUsername.prefetch({ username });
+  await ssg.posts.getByUsername.prefetch({
+    username,
+  });
 
   return {
     props: {
