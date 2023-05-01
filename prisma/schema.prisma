@@ -56,10 +56,11 @@ model CommentLike {
 }
 
 model SavedPost {
-  id     Int    @id @default(autoincrement())
-  postId Int
-  post   Post   @relation(fields: [postId], references: [id])
-  userId String
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
 
   @@index([postId])
   @@index([userId])

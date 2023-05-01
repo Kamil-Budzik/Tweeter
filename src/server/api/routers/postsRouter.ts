@@ -6,6 +6,7 @@ import {
   filterUserForClient,
   filterUserForClientWithDetails,
 } from "~/server/helpers/clientFilters";
+import { ACTIVE_FILTER } from "~/hooks/useProfile";
 
 export const postsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -15,6 +16,7 @@ export const postsRouter = createTRPCRouter({
       include: {
         likes: true,
         saves: true,
+        comments: true,
       },
     });
     const users = (
@@ -30,7 +32,7 @@ export const postsRouter = createTRPCRouter({
     }));
   }),
   getByUsername: publicProcedure
-    .input(z.object({ username: z.string() }))
+    .input(z.object({ username: z.string(), activeFilter: z.string() }))
     .query(async ({ ctx, input }) => {
       const users = (
         await clerkClient.users.getUserList({
@@ -45,6 +47,28 @@ export const postsRouter = createTRPCRouter({
           code: "NOT_FOUND",
           message: "Couldn't find user with given id",
         });
+
+      if (input.activeFilter === ACTIVE_FILTER.LIKES) {
+        const likedPosts = await ctx.prisma.like.findMany({
+          where: {
+            userId: user.id,
+          },
+          select: {
+            post: {
+              include: {
+                likes: true,
+                saves: true,
+                comments: true,
+              },
+            },
+          },
+        });
+
+        return {
+          posts: likedPosts.map((like) => like.post),
+          user,
+        };
+      }
 
       const posts = await ctx.prisma.post.findMany({
         where: {
