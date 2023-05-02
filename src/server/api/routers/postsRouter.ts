@@ -8,37 +8,63 @@ import {
 } from "~/server/helpers/clientFilters";
 import { ACTIVE_FILTER } from "~/hooks/useProfile";
 
+const GET_WITH_FILTERS_QUERY = (userId: string) => ({
+  where: {
+    userId,
+  },
+  take: 100,
+  orderBy: [{ createdAt: "desc" }],
+  select: {
+    post: {
+      include: {
+        likes: true,
+        saves: true,
+        comments: true,
+      },
+    },
+  },
+});
+
 export const postsRouter = createTRPCRouter({
   getWithFilters: publicProcedure
     .input(z.object({ userId: z.string(), activeFilter: z.string() }))
     .query(async ({ ctx, input }) => {
-      if (input.activeFilter === ACTIVE_FILTER.LIKES) {
-        const likedPosts = await ctx.prisma.like.findMany({
-          where: {
-            userId: input.userId,
-          },
-          select: {
-            post: {
-              include: {
-                likes: true,
-                saves: true,
-                comments: true,
-              },
-            },
-          },
-        });
+      switch (input.activeFilter) {
+        case ACTIVE_FILTER.LIKES:
+          const likedPosts = await ctx.prisma.like.findMany(
+            GET_WITH_FILTERS_QUERY(input.userId)
+          );
 
-        const users = (
-          await clerkClient.users.getUserList({
-            userId: likedPosts.map((like) => like.post.authorId),
-            limit: 100,
-          })
-        ).map(filterUserForClient);
+          const users = (
+            await clerkClient.users.getUserList({
+              userId: likedPosts.map((like) => like.post.authorId),
+              limit: 100,
+            })
+          ).map(filterUserForClient);
 
-        return likedPosts.map((like) => ({
-          post: like.post,
-          author: users.find((user) => user.id === like.post.authorId),
-        }));
+          return likedPosts.map((like) => ({
+            post: like.post,
+            author: users.find((user) => user.id === like.post.authorId),
+          }));
+
+        case ACTIVE_FILTER.REPLIES:
+          const commentedPosts = await ctx.prisma.comment.findMany(
+            GET_WITH_FILTERS_QUERY(input.userId)
+          );
+
+          const users2 = (
+            await clerkClient.users.getUserList({
+              userId: commentedPosts.map((comment) => comment.post.authorId),
+              limit: 100,
+            })
+          ).map(filterUserForClient);
+
+          return commentedPosts.map((comment) => ({
+            post: comment.post,
+            author: users2.find((user) => user.id === comment.post.authorId),
+          }));
+        default:
+          return;
       }
     }),
   getAll: publicProcedure.query(async ({ ctx }) => {
