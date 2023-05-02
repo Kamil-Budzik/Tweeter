@@ -8,6 +8,7 @@ import DesktopLogo from "~/assets/icons/tweeter";
 import { useRouter } from "next/router";
 import * as path from "path";
 import { act } from "react-dom/test-utils";
+import { useUser } from "@clerk/nextjs";
 
 interface Props {
   children?: ReactNode;
@@ -16,9 +17,9 @@ interface Props {
 const Layout: FC<Props> = (props) => {
   const router = useRouter();
   const pathname = router.pathname;
+  const { user } = useUser();
 
   let activeRoute = "home";
-
   if (pathname === "/explore") activeRoute = "explore";
   if (pathname === "/bookmarks") activeRoute = "bookmarks";
 
@@ -65,8 +66,16 @@ const Layout: FC<Props> = (props) => {
             </Link>
           </li>
         </ul>
-        <div>
-          <UserButton showName={true} />
+        <div className="flex">
+          {user?.username && (
+            <Link
+              href={`/profile/${user?.username}`}
+              className="mr-3 hover:underline"
+            >
+              {user?.username}
+            </Link>
+          )}
+          <UserButton />
         </div>
       </div>
       <main className="h-screen flex-grow overflow-auto bg-[#F2F2F2] pb-24">

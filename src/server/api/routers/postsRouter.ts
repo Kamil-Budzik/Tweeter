@@ -8,19 +8,20 @@ import {
 } from "~/server/helpers/clientFilters";
 import { ACTIVE_FILTER } from "~/hooks/useProfile";
 
+const INCLUDE_IN_POST = {
+  likes: true,
+  saves: true,
+  comments: true,
+};
+
 const GET_WITH_FILTERS_QUERY = (userId: string) => ({
   where: {
     userId,
   },
   take: 100,
-  orderBy: [{ createdAt: "desc" }],
   select: {
     post: {
-      include: {
-        likes: true,
-        saves: true,
-        comments: true,
-      },
+      include: INCLUDE_IN_POST,
     },
   },
 });
@@ -71,11 +72,7 @@ export const postsRouter = createTRPCRouter({
     const posts = await ctx.prisma.post.findMany({
       take: 100,
       orderBy: [{ createdAt: "desc" }],
-      include: {
-        likes: true,
-        saves: true,
-        comments: true,
-      },
+      include: INCLUDE_IN_POST,
     });
     const users = (
       await clerkClient.users.getUserList({
@@ -112,11 +109,7 @@ export const postsRouter = createTRPCRouter({
         },
         take: 100,
         orderBy: [{ createdAt: "desc" }],
-        include: {
-          likes: true,
-          saves: true,
-          comments: true,
-        },
+        include: INCLUDE_IN_POST,
       });
 
       return { posts, user };
@@ -129,18 +122,15 @@ export const postsRouter = createTRPCRouter({
           limit: 100,
         })
       ).map(filterUserForClient);
-
+      // eslint is throwing an error, but it's 100% valid, for some reason server doesn't recognize orderBy as a value
       const savedPosts = await ctx.prisma.savedPost.findMany({
         where: {
           userId: input.userId,
         },
+        orderBy: [{ createdAt: "desc" }],
         include: {
           post: {
-            include: {
-              likes: true,
-              saves: true,
-              comments: true,
-            },
+            include: INCLUDE_IN_POST,
           },
         },
       });

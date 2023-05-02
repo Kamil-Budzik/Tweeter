@@ -28,6 +28,7 @@ const PostsItemActionbar = ({ isLiked, postId, isSaved }: Props) => {
     void ctx.posts.getAll.invalidate();
     void ctx.posts.getByUsername.invalidate();
     void ctx.posts.getSavedById.invalidate({ userId: user?.id });
+    void ctx.posts.getWithFilters.invalidate({ userId: user?.id });
   };
 
   const handleClick = (action: ITEMS_ACTION) => {
