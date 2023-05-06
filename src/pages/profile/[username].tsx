@@ -36,7 +36,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       </>
     );
 
-  const { user, posts } = data;
+  const { user, posts, followData } = data;
+
   // TODO nav will be moved to a new component due to it's reusability, you might face some reactivity issue because of it!
   return (
     <>
@@ -47,9 +48,10 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <ProfileHeader
           username={user.username}
           bio={user.bio}
-          following={2569}
-          followers={10800}
+          following={followData.follows.length}
+          followers={followData.followedBy.length}
           profileImageUrl={user.profileImageUrl}
+          userId={user.id}
         />
         <section className="content-wrapper md:grid md:grid-cols-[350px_1fr]">
           <Filters activeFilter={filter} items={navItems} />
@@ -76,7 +78,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   if (typeof username !== "string") throw new Error("no username");
 
-  await ssg.posts.getByUsername.prefetch({
+  await ssg.profile.getDataByUsername.prefetch({
     username,
   });
 

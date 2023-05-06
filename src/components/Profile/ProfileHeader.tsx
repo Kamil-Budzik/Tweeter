@@ -1,4 +1,6 @@
 import { Button } from "~/components/ui/Button";
+import { api } from "~/utils/api";
+import { useUser } from "@clerk/nextjs";
 
 interface Props {
   username: string;
@@ -6,6 +8,7 @@ interface Props {
   following: number;
   followers: number;
   profileImageUrl: string;
+  userId: string;
 }
 
 const ProfileHeader = ({
@@ -14,7 +17,29 @@ const ProfileHeader = ({
   following,
   followers,
   profileImageUrl,
+  userId,
 }: Props) => {
+  const ctx = api.useContext();
+  const { user } = useUser();
+  const { data: isFollowed } = api.profile.getFollowStatus.useQuery({
+    userId: user?.id || "",
+    userToCheck: userId || "",
+  });
+  const { mutate } = api.profile.toggleFollow.useMutation({
+    onSuccess: () => {
+      void ctx.profile.getFollowStatus.invalidate();
+      void ctx.profile.getDataByUsername.invalidate({ username });
+    },
+  });
+
+  const handleClick = () => {
+    mutate({
+      isFollowed: isFollowed || false,
+      userId: user?.id as string,
+      userToFollow: userId,
+    });
+  };
+
   return (
     <header>
       <img
@@ -59,9 +84,17 @@ const ProfileHeader = ({
           </p>
 
           {/*Follow button*/}
-          <div className="transform-header-items flex justify-center md:col-start-4  md:row-start-1 md:justify-self-center">
-            <Button icon="follow">Follow</Button>
-          </div>
+          {user?.username !== username && (
+            <div className="transform-header-items flex justify-center md:col-start-4  md:row-start-1 md:justify-self-center">
+              <div onClick={handleClick}>
+                {isFollowed ? (
+                  <Button>Following</Button>
+                ) : (
+                  <Button icon="follow">Follow</Button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

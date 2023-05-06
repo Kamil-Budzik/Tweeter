@@ -11,7 +11,7 @@ export enum ACTIVE_FILTER {
 
 const useProfile = (username: string) => {
   const [filter, setFilter] = useState<ACTIVE_FILTER>(ACTIVE_FILTER.TWEETS);
-  const { data } = api.posts.getByUsername.useQuery({
+  const { data } = api.profile.getDataByUsername.useQuery({
     username,
   });
 

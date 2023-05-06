@@ -26,7 +26,7 @@ const PostsItemActionbar = ({ isLiked, postId, isSaved }: Props) => {
 
   const invalidateQueries = () => {
     void ctx.posts.getAll.invalidate();
-    void ctx.posts.getByUsername.invalidate();
+    void ctx.profile.getDataByUsername.invalidate();
     void ctx.posts.getSavedById.invalidate({ userId: user?.id });
     void ctx.posts.getWithFilters.invalidate({ userId: user?.id });
   };
