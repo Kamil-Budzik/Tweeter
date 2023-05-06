@@ -1,25 +1,79 @@
 import { z } from "zod";
-import { TRPCError } from "@trpc/server";
-import { clerkClient } from "@clerk/nextjs/api";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import { filterUserForClientWithDetails } from "~/server/helpers/clientFilters";
+import { INCLUDE_IN_POST } from "~/server/api/routers/postsRouter";
+import getUserByUsername from "~/server/helpers/getUserByUsername";
 
 export const profileRouter = createTRPCRouter({
   // Will be used on Profile Page for following, followers, BIO
-  getUserByUsername: publicProcedure
+  getDataByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
-      const [user] = await clerkClient.users.getUserList({
-        username: [input.username],
+      // Get userId by username
+      const user = await getUserByUsername(input.username);
+
+      const posts = await ctx.prisma.post.findMany({
+        where: {
+          authorId: user.id,
+        },
+        take: 100,
+        orderBy: [{ createdAt: "desc" }],
+        include: INCLUDE_IN_POST,
       });
 
-      if (!user) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User not found",
-        });
-      }
+      const follows = await ctx.prisma.follow.findMany({
+        where: {
+          userId: user.id,
+        },
+      });
+      const followedBy = await ctx.prisma.follow.findMany({
+        where: {
+          followedUserId: user.id,
+        },
+      });
 
-      return filterUserForClientWithDetails(user);
+      return {
+        posts,
+        user,
+        followData: {
+          followedBy,
+          follows,
+        },
+      };
+    }),
+  getFollowStatus: publicProcedure
+    .input(z.object({ userId: z.string(), userToCheck: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const follow = await ctx.prisma.follow.findFirst({
+        where: {
+          userId: input.userId,
+          followedUserId: input.userToCheck,
+        },
+      });
+      return !!follow;
+    }),
+  toggleFollow: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        userToFollow: z.string(),
+        isFollowed: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (input.isFollowed) {
+        await ctx.prisma.follow.deleteMany({
+          where: {
+            userId: input.userId,
+            followedUserId: input.userToFollow,
+          },
+        });
+        return;
+      }
+      await ctx.prisma.follow.create({
+        data: {
+          userId: input.userId,
+          followedUserId: input.userToFollow,
+        },
+      });
     }),
 });

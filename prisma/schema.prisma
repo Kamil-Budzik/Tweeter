@@ -11,6 +11,16 @@ datasource db {
   relationMode = "prisma"
 }
 
+model Follow {
+  id             Int      @id @default(autoincrement())
+  userId         String
+  followedUserId String
+  followAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([followedUserId])
+}
+
 model Post {
   id        Int         @id @default(autoincrement())
   createdAt DateTime    @default(now())

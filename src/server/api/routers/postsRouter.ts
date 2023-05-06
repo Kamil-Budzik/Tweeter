@@ -1,14 +1,10 @@
 import { z } from "zod";
-import { TRPCError } from "@trpc/server";
 import { clerkClient } from "@clerk/nextjs/api";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import {
-  filterUserForClient,
-  filterUserForClientWithDetails,
-} from "~/server/helpers/clientFilters";
+import { filterUserForClient } from "~/server/helpers/clientFilters";
 import { ACTIVE_FILTER } from "~/hooks/useProfile";
 
-const INCLUDE_IN_POST = {
+export const INCLUDE_IN_POST = {
   likes: true,
   saves: true,
   comments: true,
@@ -27,6 +23,7 @@ const GET_WITH_FILTERS_QUERY = (userId: string) => ({
 });
 
 export const postsRouter = createTRPCRouter({
+  // getWithFilters is so awful that i will refactor it in the future
   getWithFilters: publicProcedure
     .input(z.object({ userId: z.string(), activeFilter: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -86,34 +83,6 @@ export const postsRouter = createTRPCRouter({
       author: users.find((user) => user.id === post.authorId),
     }));
   }),
-  getByUsername: publicProcedure
-    .input(z.object({ username: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const users = (
-        await clerkClient.users.getUserList({
-          limit: 100,
-        })
-      ).map(filterUserForClientWithDetails);
-
-      const user = users.find((user) => user.username === input.username);
-
-      if (!user)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Couldn't find user with given id",
-        });
-
-      const posts = await ctx.prisma.post.findMany({
-        where: {
-          authorId: user.id,
-        },
-        take: 100,
-        orderBy: [{ createdAt: "desc" }],
-        include: INCLUDE_IN_POST,
-      });
-
-      return { posts, user };
-    }),
   getSavedById: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -122,7 +91,7 @@ export const postsRouter = createTRPCRouter({
           limit: 100,
         })
       ).map(filterUserForClient);
-      // eslint is throwing an error, but it's 100% valid, for some reason server doesn't recognize orderBy as a value
+      // eslint is throwing an error, but it's 100% valid, for some reason server doesn't recognize orderBy as a value even though it is there
       const savedPosts = await ctx.prisma.savedPost.findMany({
         where: {
           userId: input.userId,
@@ -152,14 +121,14 @@ export const postsRouter = createTRPCRouter({
             userId: input.userId,
           },
         });
-      } else {
-        await ctx.prisma.savedPost.create({
-          data: {
-            postId: input.postId,
-            userId: input.userId,
-          },
-        });
+        return;
       }
+      await ctx.prisma.savedPost.create({
+        data: {
+          postId: input.postId,
+          userId: input.userId,
+        },
+      });
     }),
   addItem: publicProcedure
     .input(z.object({ text: z.string(), authorId: z.string() }))
@@ -187,13 +156,13 @@ export const postsRouter = createTRPCRouter({
             postId: input.postId,
           },
         });
-      } else {
-        await ctx.prisma.like.create({
-          data: {
-            userId: input.userId,
-            postId: input.postId,
-          },
-        });
+        return;
       }
+      await ctx.prisma.like.create({
+        data: {
+          userId: input.userId,
+          postId: input.postId,
+        },
+      });
     }),
 });
