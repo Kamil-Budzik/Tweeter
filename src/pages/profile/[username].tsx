@@ -12,9 +12,25 @@ import ProfileHeader from "~/components/Profile/ProfileHeader";
 import ProfileTweets from "~/components/Profile/ProfileTweets";
 import Filters from "~/components/ui/Filters";
 import ProfileFilteredTweets from "~/components/Profile/ProfileFilteredTweets";
+import { SignInButton, useUser } from "@clerk/nextjs";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data, filter, navItems } = useProfile(username);
+
+  const { isSignedIn } = useUser();
+
+  if (!isSignedIn)
+    return (
+      <Layout>
+        <div className="flex h-screen items-center justify-center">
+          <SignInButton mode="modal">
+            <button className="btn rounded-2xl bg-blue-500 px-10 py-2 font-bold text-white transition hover:bg-blue-600">
+              Sign in
+            </button>
+          </SignInButton>
+        </div>
+      </Layout>
+    );
 
   if (!data)
     return (

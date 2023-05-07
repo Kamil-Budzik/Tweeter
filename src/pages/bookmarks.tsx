@@ -7,10 +7,9 @@ import { api } from "~/utils/api";
 
 const Bookmarks = () => {
   const { isSignedIn, user } = useUser();
-  if (!user) return <div />;
 
   const { data, isLoading } = api.posts.getSavedById.useQuery({
-    userId: user?.id,
+    userId: user?.id || "",
   });
 
   if (!isSignedIn)
