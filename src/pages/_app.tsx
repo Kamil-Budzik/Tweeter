@@ -1,9 +1,11 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import { type AppType } from "next/app";
 import Head from "next/head";
+import Modal from "react-modal";
 import { api } from "~/utils/api";
 import "~/styles/globals.css";
 
+Modal.setAppElement("#modal");
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <>
@@ -14,6 +16,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       </Head>
       <ClerkProvider {...pageProps}>
         <Component {...pageProps} />)
+        <div id="modal" />
       </ClerkProvider>
     </>
   );
