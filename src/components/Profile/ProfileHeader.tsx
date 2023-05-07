@@ -9,6 +9,8 @@ interface Props {
   followers: number;
   profileImageUrl: string;
   userId: string;
+  openFollowingModal: () => void;
+  openFollowersModal: () => void;
 }
 
 const ProfileHeader = ({
@@ -18,6 +20,8 @@ const ProfileHeader = ({
   followers,
   profileImageUrl,
   userId,
+  openFollowingModal,
+  openFollowersModal,
 }: Props) => {
   const ctx = api.useContext();
   const { user } = useUser();
@@ -65,11 +69,11 @@ const ProfileHeader = ({
 
           {/*Stats*/}
           <div className="transform-header-items flex">
-            <p className="mr-3">
+            <p className="mr-3" onClick={openFollowingModal}>
               <span className="font-bold text-[#333333]">{following}</span>{" "}
               Following
             </p>
-            <p>
+            <p onClick={openFollowersModal}>
               <span className="font-bold text-[#333333]">{followers}</span>{" "}
               Followers
             </p>

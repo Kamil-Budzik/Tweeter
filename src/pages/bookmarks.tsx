@@ -1,6 +1,7 @@
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import Layout from "~/components/layouts/Layout";
 import PostsItem from "~/components/Posts/PostItem/PostsItem";
+import SignIn from "~/components/ui/SignIn";
 import { LoadingPage } from "~/components/ui/Loading";
 import ErrorPage from "~/components/ui/Error";
 import { api } from "~/utils/api";
@@ -12,22 +13,11 @@ const Bookmarks = () => {
     userId: user?.id || "",
   });
 
-  if (!isSignedIn)
-    return (
-      <Layout>
-        <div className="flex h-screen items-center justify-center">
-          <SignInButton mode="modal">
-            <button className="btn rounded-2xl bg-blue-500 px-10 py-2 font-bold text-white transition hover:bg-blue-600">
-              Sign in
-            </button>
-          </SignInButton>
-        </div>
-      </Layout>
-    );
+  if (!isSignedIn) return <SignIn />;
 
   if (isLoading) return <LoadingPage />;
 
-  if (!data) return <ErrorPage />;
+  if (!data) return <ErrorPage isReturn />;
 
   // TODO handle empty array later on
 

@@ -1,9 +1,12 @@
 import Layout from "~/components/layouts/Layout";
+import { Button } from "~/components/ui/Button";
+import Link from "next/link";
 
 interface Props {
   msg?: string;
+  isReturn?: boolean;
 }
-export const ErrorMsg = ({ msg }: Props) => {
+export const ErrorMsg = ({ msg, isReturn }: Props) => {
   return (
     <div>
       <h1>
@@ -15,15 +18,20 @@ export const ErrorMsg = ({ msg }: Props) => {
             page or contact our support!
           </p>
         )}
+        {isReturn && (
+          <Link href="/">
+            <Button>Return to main page</Button>
+          </Link>
+        )}
       </h1>
     </div>
   );
 };
 
-const ErrorPage = () => {
+const ErrorPage = (props: Props) => {
   return (
     <Layout>
-      <ErrorMsg />
+      <ErrorMsg {...props} />
     </Layout>
   );
 };

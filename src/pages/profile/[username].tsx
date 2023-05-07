@@ -1,56 +1,32 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import Layout from "~/components/layouts/Layout";
-import { Button } from "~/components/ui/Button";
-import useProfile, { ACTIVE_FILTER } from "~/hooks/useProfile";
-import { prisma } from "~/server/db";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import { appRouter } from "~/server/api/root";
 import superjson from "superjson";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { useUser } from "@clerk/nextjs";
+import Layout from "~/components/layouts/Layout";
+import ErrorPage from "~/components/ui/Error";
+import SignIn from "~/components/ui/SignIn";
 import ProfileHeader from "~/components/Profile/ProfileHeader";
 import ProfileTweets from "~/components/Profile/ProfileTweets";
 import Filters from "~/components/ui/Filters";
 import ProfileFilteredTweets from "~/components/Profile/ProfileFilteredTweets";
-import { SignInButton, useUser } from "@clerk/nextjs";
+import ProfileFollowModals from "~/components/Profile/ProfileFollowModals";
+import { prisma } from "~/server/db";
+import { appRouter } from "~/server/api/root";
+import useProfile, { ACTIVE_FILTER } from "~/hooks/useProfile";
+import useModal from "~/hooks/useModal";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  const { data, filter, navItems } = useProfile(username);
-
   const { isSignedIn } = useUser();
+  const { data, filter, navItems } = useProfile(username);
+  const { isModal: isFollowingModal, toggle: toggleFollowingModal } =
+    useModal();
+  const { isModal: isFollowersModal, toggle: toggleFollowersModal } =
+    useModal();
 
-  if (!isSignedIn)
-    return (
-      <Layout>
-        <div className="flex h-screen items-center justify-center">
-          <SignInButton mode="modal">
-            <button className="btn rounded-2xl bg-blue-500 px-10 py-2 font-bold text-white transition hover:bg-blue-600">
-              Sign in
-            </button>
-          </SignInButton>
-        </div>
-      </Layout>
-    );
+  if (!isSignedIn) return <SignIn />;
 
-  if (!data)
-    return (
-      <>
-        <Head>
-          <title>Not found</title>
-        </Head>
-        <Layout>
-          <div className="flex h-full flex-col items-center justify-center gap-5">
-            <h1>
-              {" "}
-              {username} {"doesn't"} exist
-            </h1>
-            <Link href="/">
-              <Button>Return to main page</Button>
-            </Link>
-          </div>
-        </Layout>
-      </>
-    );
+  if (!data) return <ErrorPage isReturn msg={"Username doesn't exist"} />;
 
   const { user, posts, followData } = data;
 
@@ -68,6 +44,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           followers={followData.followedBy.length}
           profileImageUrl={user.profileImageUrl}
           userId={user.id}
+          openFollowersModal={toggleFollowersModal}
+          openFollowingModal={toggleFollowingModal}
         />
         <section className="content-wrapper md:grid md:grid-cols-[350px_1fr]">
           <Filters activeFilter={filter} items={navItems} />
@@ -77,6 +55,12 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             <ProfileFilteredTweets filter={filter} userId={user.id} />
           )}
         </section>
+        <ProfileFollowModals
+          isFollowersModal={isFollowersModal}
+          isFollowingModal={isFollowingModal}
+          toggleFollowersModal={toggleFollowersModal}
+          toggleFollowingModal={toggleFollowingModal}
+        />
       </Layout>
     </>
   );
