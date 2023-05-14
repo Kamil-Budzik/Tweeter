@@ -1,8 +1,10 @@
 import Modal from "react-modal";
+import { api, type RouterOutputs } from "~/utils/api";
 
 interface Props {
   isFollowersModal: boolean;
   isFollowingModal: boolean;
+  followData: RouterOutputs["profile"]["getDataByUsername"]["followData"];
   toggleFollowersModal: () => void;
   toggleFollowingModal: () => void;
 }
@@ -23,7 +25,13 @@ const ProfileFollowModals = ({
   isFollowingModal,
   isFollowersModal,
   toggleFollowingModal,
+  followData,
 }: Props) => {
+  const { data } = api.profile.getFollowData.useQuery({
+    followers: followData.followedBy,
+    follows: followData.follows,
+  });
+
   return (
     <>
       <Modal
@@ -34,6 +42,11 @@ const ProfileFollowModals = ({
         style={modalStyles}
       >
         FollowersModal
+        {data?.followedBy.map((follower) => (
+          <div>
+            <h1>{follower.username}</h1>
+          </div>
+        ))}
         <button onClick={toggleFollowersModal}>Close</button>
       </Modal>
       <Modal
@@ -44,6 +57,11 @@ const ProfileFollowModals = ({
         style={modalStyles}
       >
         Following modal
+        {data?.follows.map((follow) => (
+          <div>
+            <h1>{follow.username}</h1>
+          </div>
+        ))}
         <button onClick={toggleFollowingModal}>Close</button>
       </Modal>
     </>

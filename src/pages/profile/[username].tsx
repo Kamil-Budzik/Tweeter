@@ -60,6 +60,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           isFollowingModal={isFollowingModal}
           toggleFollowersModal={toggleFollowersModal}
           toggleFollowingModal={toggleFollowingModal}
+          followData={followData}
         />
       </Layout>
     </>

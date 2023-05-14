@@ -1,8 +1,10 @@
 import PostsItem from "~/components/Posts/PostItem/PostsItem";
 import { type RouterOutputs } from "~/utils/api";
 
-type Props = RouterOutputs["posts"]["getByUsername"];
-
+interface Props {
+  posts: RouterOutputs["profile"]["getDataByUsername"]["posts"];
+  user: RouterOutputs["profile"]["getDataByUsername"]["user"];
+}
 const ProfileTweets = ({ posts, user }: Props) => {
   if (!posts) {
     return (
