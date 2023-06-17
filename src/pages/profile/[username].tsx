@@ -10,7 +10,7 @@ import ProfileHeader from "~/components/Profile/ProfileHeader";
 import ProfileTweets from "~/components/Profile/ProfileTweets";
 import Filters from "~/components/ui/Filters";
 import ProfileFilteredTweets from "~/components/Profile/ProfileFilteredTweets";
-import ProfileFollowModals from "~/components/Profile/ProfileFollowModals";
+import ProfileFollowModals from "~/components/Profile/modals/ProfileFollowModals";
 import { prisma } from "~/server/db";
 import { appRouter } from "~/server/api/root";
 import useProfile, { ACTIVE_FILTER } from "~/hooks/useProfile";
