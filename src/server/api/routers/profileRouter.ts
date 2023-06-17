@@ -18,9 +18,7 @@ export const profileRouter = createTRPCRouter({
   getDataByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
-      // Get userId by username
       const user = await getUserByUsername(input.username);
-
       const posts = await ctx.prisma.post.findMany({
         where: {
           authorId: user.id,

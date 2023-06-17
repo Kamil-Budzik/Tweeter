@@ -5,6 +5,7 @@ interface Props {
   isDisabled?: boolean;
   type?: "button" | "submit" | "reset";
   icon?: "follow";
+  onClick?: () => void;
 }
 
 export const Button = ({
@@ -12,8 +13,10 @@ export const Button = ({
   isDisabled,
   type,
   icon,
+  onClick,
 }: PropsWithChildren<Props>) => (
   <button
+    onClick={onClick}
     type={type ?? "button"}
     className="mt-6 flex items-center justify-center rounded bg-blue-500 px-6 py-2 font-medium text-white transition hover:bg-blue-600 disabled:bg-blue-300"
     disabled={isDisabled}
