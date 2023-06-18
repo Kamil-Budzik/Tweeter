@@ -1,5 +1,5 @@
-import { api } from "~/utils/api";
 import { useState } from "react";
+import { api } from "~/utils/api";
 import { type FilterItem } from "~/components/ui/Filters";
 
 export enum EXPLORE_ACTIVE_FILTER {
@@ -13,7 +13,7 @@ const useExplore = () => {
   const [filter, setFilter] = useState<EXPLORE_ACTIVE_FILTER>(
     EXPLORE_ACTIVE_FILTER.TOP
   );
-  const { data, isLoading } = api.posts.getAll.useQuery();
+  const { data, isLoading } = api.posts.getAll.useQuery(filter);
 
   const navItems: FilterItem[] = [
     {
