@@ -32,9 +32,11 @@ const PostsItem = ({ post, author }: Props) => {
         <p>{post.content}</p>
       </div>
 
-      <div>{post.likes.length} Likes</div>
-      <div>{comments?.length} comments</div>
-      <div>{post.saves?.length} Saves</div>
+      <ul className="mb-4 flex justify-end">
+        <li className="mr-2 text-[#BDBDBD]">{post.likes.length} Likes</li>
+        <li className="mr-2 text-[#BDBDBD]">{comments?.length} comments</li>
+        <li className="text-[#BDBDBD]">{post.saves?.length} Saves</li>
+      </ul>
       <PostsItemActionbar
         isLiked={!!isLiked}
         postId={post.id}
