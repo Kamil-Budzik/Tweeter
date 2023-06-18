@@ -1,13 +1,13 @@
-import { type NextPage } from "next";
-import { api } from "~/utils/api";
+import { type RouterOutputs } from "~/utils/api";
 import { LoadingPage } from "~/components/ui/Loading";
 import PostsItem from "~/components/Posts/PostItem/PostsItem";
 import TweetForm from "~/components/Posts/TweetForm";
 import ErrorPage from "~/components/ui/Error";
-
-const Posts: NextPage = () => {
-  const { data, isLoading } = api.posts.getAll.useQuery();
-
+interface Props {
+  data?: RouterOutputs["posts"]["getAll"];
+  isLoading: boolean;
+}
+const Posts = ({ data, isLoading }: Props) => {
   if (isLoading) {
     return <LoadingPage />;
   }

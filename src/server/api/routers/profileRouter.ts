@@ -3,7 +3,10 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { INCLUDE_IN_POST } from "~/server/api/routers/postsRouter";
 import getUserByUsername from "~/server/helpers/getUserByUsername";
 import { clerkClient } from "@clerk/nextjs/api";
-import { filterUserForClientWithDetails } from "~/server/helpers/clientFilters";
+import {
+  filterUserForClient,
+  filterUserForClientWithDetails,
+} from "~/server/helpers/clientFilters";
 
 const ZOD_FOLLOW = z.array(
   z.object({
@@ -14,7 +17,43 @@ const ZOD_FOLLOW = z.array(
 );
 
 export const profileRouter = createTRPCRouter({
-  // Will be used on Profile Page for following, followers, BIO
+  getHomePosts: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const followedUserIds = await ctx.prisma.follow
+        .findMany({
+          where: {
+            userId: input.userId,
+          },
+          select: {
+            followedUserId: true,
+          },
+        })
+        .then((follows) => follows.map((follow) => follow.followedUserId));
+
+      const posts = await ctx.prisma.post.findMany({
+        where: {
+          authorId: {
+            in: followedUserIds,
+          },
+        },
+        take: 50,
+        include: INCLUDE_IN_POST,
+        orderBy: [{ createdAt: "desc" }],
+      });
+
+      const users = (
+        await clerkClient.users.getUserList({
+          userId: posts.map((post) => post.authorId),
+          limit: 100,
+        })
+      ).map(filterUserForClient);
+
+      return posts.map((post) => ({
+        post,
+        author: users.find((user) => user.id === post.authorId),
+      }));
+    }),
   getDataByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {

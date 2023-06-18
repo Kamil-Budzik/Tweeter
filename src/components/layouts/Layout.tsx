@@ -6,8 +6,6 @@ import { AiFillHome, AiFillCompass } from "react-icons/ai";
 import MobileLogo from "~/assets/icons/tweeter-small";
 import DesktopLogo from "~/assets/icons/tweeter";
 import { useRouter } from "next/router";
-import * as path from "path";
-import { act } from "react-dom/test-utils";
 import { useUser } from "@clerk/nextjs";
 
 interface Props {
@@ -45,9 +43,11 @@ const Layout: FC<Props> = (props) => {
           </li>
           <li className="text-[#828282]">
             <Link
-              href="/"
+              href="/explore"
               className={`mx-10 ${
-                pathname === "/explore" ? "text-blue-500" : ""
+                activeRoute === "explore"
+                  ? "border-b-2 border-blue-500 font-semibold text-blue-500"
+                  : ""
               }`}
             >
               Explore
