@@ -4,8 +4,7 @@ import { type FilterItem } from "~/components/ui/Filters";
 
 export enum ACTIVE_FILTER {
   TWEETS = "tweets",
-  REPLIES = "replies",
-  MEDIA = "media",
+  COMMENTS = "comments",
   LIKES = "likes",
 }
 
@@ -22,14 +21,9 @@ const useProfile = (username: string) => {
       handler: () => setFilter(ACTIVE_FILTER.TWEETS),
     },
     {
-      text: "Tweets & replies",
-      value: ACTIVE_FILTER.REPLIES,
-      handler: () => setFilter(ACTIVE_FILTER.REPLIES),
-    },
-    {
-      text: "Media",
-      value: ACTIVE_FILTER.MEDIA,
-      handler: () => setFilter(ACTIVE_FILTER.MEDIA),
+      text: "Comments",
+      value: ACTIVE_FILTER.COMMENTS,
+      handler: () => setFilter(ACTIVE_FILTER.COMMENTS),
     },
     {
       text: "Likes",

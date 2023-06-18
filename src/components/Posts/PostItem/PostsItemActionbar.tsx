@@ -37,9 +37,6 @@ const PostsItemActionbar = ({ isLiked, postId, isSaved }: Props) => {
       case ITEMS_ACTION.LIKE:
         toggleLike({ isLiked: isLiked, postId, userId: user?.id });
         break;
-      case ITEMS_ACTION.RETWEET:
-        console.log("RETWEET");
-        break;
       case ITEMS_ACTION.BOOKMARK:
         savePost({ isSaved: isSaved, userId: user?.id, postId });
         break;
@@ -52,7 +49,7 @@ const PostsItemActionbar = ({ isLiked, postId, isSaved }: Props) => {
     <ul className="flex items-center border-t border-[#F2F2F2] text-xl text-[#4F4F4F]">
       {/*COMMENT*/}
       <li
-        className={`mt-1 flex w-1/4 cursor-pointer items-center justify-center rounded transition duration-300 hover:bg-blue-300 hover:text-blue-600`}
+        className={`mt-1 flex w-1/3 cursor-pointer items-center justify-center rounded transition duration-300 hover:bg-blue-300 hover:text-blue-600`}
         onClick={() => handleClick(ITEMS_ACTION.COMMENT)}
       >
         <label
@@ -64,18 +61,9 @@ const PostsItemActionbar = ({ isLiked, postId, isSaved }: Props) => {
         </label>
       </li>
 
-      {/*RETWEET*/}
-      <li
-        className={`mt-1 flex w-1/4 cursor-pointer items-center justify-center rounded py-3 transition duration-300 hover:bg-green-300 hover:text-green-600`}
-        onClick={() => handleClick(ITEMS_ACTION.RETWEET)}
-      >
-        <BiRefresh />
-        <p className="ml-2 hidden text-sm md:block">Retweet</p>
-      </li>
-
       {/*LIKE*/}
       <li
-        className={`mt-1 flex w-1/4 cursor-pointer items-center justify-center rounded py-3 transition duration-300 ${
+        className={`mt-1 flex w-1/3 cursor-pointer items-center justify-center rounded py-3 transition duration-300 ${
           isLiked ? "text-red-600" : "hover:bg-red-300 hover:text-red-600"
         }`}
         onClick={() => handleClick(ITEMS_ACTION.LIKE)}
@@ -94,7 +82,7 @@ const PostsItemActionbar = ({ isLiked, postId, isSaved }: Props) => {
 
       {/*SAVE*/}
       <li
-        className={`mt-1 flex w-1/4 cursor-pointer items-center justify-center rounded py-3 transition duration-300 ${
+        className={`mt-1 flex w-1/3 cursor-pointer items-center justify-center rounded py-3 transition duration-300 ${
           isSaved ? "text-blue-600" : "hover:bg-blue-300 hover:text-blue-600"
         }`}
         onClick={() => handleClick(ITEMS_ACTION.BOOKMARK)}
