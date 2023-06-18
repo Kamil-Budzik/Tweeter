@@ -1,8 +1,10 @@
 import { z } from "zod";
+import { type Prisma } from "@prisma/client";
 import { clerkClient } from "@clerk/nextjs/api";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { filterUserForClient } from "~/server/helpers/clientFilters";
 import { ACTIVE_FILTER } from "~/hooks/useProfile";
+import { EXPLORE_ACTIVE_FILTER } from "~/hooks/useExplore";
 
 export const INCLUDE_IN_POST = {
   likes: true,
@@ -63,24 +65,37 @@ export const postsRouter = createTRPCRouter({
         }));
       }
     }),
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    const posts = await ctx.prisma.post.findMany({
-      take: 100,
-      orderBy: [{ createdAt: "desc" }],
-      include: INCLUDE_IN_POST,
-    });
-    const users = (
-      await clerkClient.users.getUserList({
-        userId: posts.map((post) => post.authorId),
-        limit: 100,
-      })
-    ).map(filterUserForClient);
+  getAll: publicProcedure
+    .input(z.string().optional())
+    .query(async ({ ctx, input: sortBy }) => {
+      const orderBy: Prisma.PostOrderByWithRelationInput[] = [];
+      if (sortBy === EXPLORE_ACTIVE_FILTER.LATEST) {
+        orderBy.push({ createdAt: "desc" }); // Sort by createdAt field in descending order
+      } else if (sortBy === EXPLORE_ACTIVE_FILTER.TOP) {
+        orderBy.push({ likes: { _count: "desc" } }); // Sort by the count of likes in descending order
+      } else if (sortBy === EXPLORE_ACTIVE_FILTER.COMMENTED) {
+        orderBy.push({ comments: { _count: "desc" } }); // Sort by the count of comments in descending order
+      } else if (sortBy === EXPLORE_ACTIVE_FILTER.SAVED) {
+        orderBy.push({ saves: { _count: "desc" } }); // Sort by the count of saves in descending order
+      }
 
-    return posts.map((post) => ({
-      post,
-      author: users.find((user) => user.id === post.authorId),
-    }));
-  }),
+      const posts = await ctx.prisma.post.findMany({
+        take: 100,
+        orderBy,
+        include: INCLUDE_IN_POST,
+      });
+      const users = (
+        await clerkClient.users.getUserList({
+          userId: posts.map((post) => post.authorId),
+          limit: 100,
+        })
+      ).map(filterUserForClient);
+
+      return posts.map((post) => ({
+        post,
+        author: users.find((user) => user.id === post.authorId),
+      }));
+    }),
   getSavedById: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
