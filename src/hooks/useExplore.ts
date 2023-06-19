@@ -13,7 +13,12 @@ const useExplore = () => {
   const [filter, setFilter] = useState<EXPLORE_ACTIVE_FILTER>(
     EXPLORE_ACTIVE_FILTER.TOP
   );
-  const { data, isLoading } = api.posts.getAll.useQuery(filter);
+  const [search, setSearch] = useState("");
+
+  const { data, isLoading } = api.posts.getAll.useQuery({
+    sortBy: filter,
+    search,
+  });
 
   const navItems: FilterItem[] = [
     {
@@ -38,7 +43,7 @@ const useExplore = () => {
     },
   ];
 
-  return { data, filter, navItems, isLoading };
+  return { data, filter, navItems, isLoading, search, setSearch };
 };
 
 export default useExplore;
