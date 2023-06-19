@@ -66,24 +66,31 @@ export const postsRouter = createTRPCRouter({
       }
     }),
   getAll: publicProcedure
-    .input(z.string().optional())
-    .query(async ({ ctx, input: sortBy }) => {
+    .input(
+      z.object({
+        sortBy: z.string().optional(),
+        search: z.string().optional(),
+      })
+    )
+    .query(async ({ ctx, input: { sortBy, search } }) => {
       const orderBy: Prisma.PostOrderByWithRelationInput[] = [];
       if (sortBy === EXPLORE_ACTIVE_FILTER.LATEST) {
-        orderBy.push({ createdAt: "desc" }); // Sort by createdAt field in descending order
+        orderBy.push({ createdAt: "desc" });
       } else if (sortBy === EXPLORE_ACTIVE_FILTER.TOP) {
-        orderBy.push({ likes: { _count: "desc" } }); // Sort by the count of likes in descending order
+        orderBy.push({ likes: { _count: "desc" } });
       } else if (sortBy === EXPLORE_ACTIVE_FILTER.COMMENTED) {
-        orderBy.push({ comments: { _count: "desc" } }); // Sort by the count of comments in descending order
+        orderBy.push({ comments: { _count: "desc" } });
       } else if (sortBy === EXPLORE_ACTIVE_FILTER.SAVED) {
-        orderBy.push({ saves: { _count: "desc" } }); // Sort by the count of saves in descending order
+        orderBy.push({ saves: { _count: "desc" } });
       }
 
       const posts = await ctx.prisma.post.findMany({
         take: 100,
         orderBy,
         include: INCLUDE_IN_POST,
+        where: { content: { contains: search } },
       });
+
       const users = (
         await clerkClient.users.getUserList({
           userId: posts.map((post) => post.authorId),
