@@ -19,7 +19,8 @@ const TweetForm = () => {
   } = useForm<Inputs>();
   const { mutate, isLoading } = api.posts.addItem.useMutation({
     onSuccess: () => {
-      void ctx.posts.getAll.invalidate();
+      void ctx.profile.getHomePosts.invalidate();
+      void ctx.posts.getWithFilters.invalidate();
       reset();
     },
   });
@@ -62,9 +63,11 @@ const TweetForm = () => {
       </div>
 
       {/*TODO: Add "Who can reply section" and maybe image upload*/}
-      <Button isDisabled={!isValid} type="submit">
-        Tweet
-      </Button>
+      <div className="mt-6">
+        <Button isDisabled={!isValid} type="submit">
+          Tweet
+        </Button>
+      </div>
     </form>
   );
 };
