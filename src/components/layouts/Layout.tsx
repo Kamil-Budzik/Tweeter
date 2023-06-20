@@ -91,7 +91,7 @@ const Layout: FC<Props> = (props) => {
           <AiFillHome fill={activeRoute === "home" ? "#3b82f6" : "#828282"} />
         </Link>
         <Link
-          href="/"
+          href="/explore"
           className={`flex h-14 w-1/3 items-center justify-center text-2xl ${
             activeRoute === "explore" ? " border-b-2 border-blue-500 " : ""
           }`}
