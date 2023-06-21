@@ -9,7 +9,7 @@ interface Props {
   id: string;
   username: string;
   profileImageUrl: string;
-  bio: string;
+  bio?: string;
 }
 const FollowModalItem = ({ id, profileImageUrl, username, bio }: Props) => {
   const { user } = useUser();
@@ -51,7 +51,9 @@ const FollowModalItem = ({ id, profileImageUrl, username, bio }: Props) => {
               >
                 {username}
               </Link>
-              <p className="hidden text-[#828282] md:block">{bio}</p>
+              <p className="hidden text-[#828282] md:block">
+                {bio || "No bio yet"}
+              </p>
             </div>
           </div>
           {id !== user?.id && (

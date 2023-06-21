@@ -81,8 +81,8 @@ const ProfileHeader = ({
 
           {/*BIO*/}
           <p
-            className="transform-header-items max-w-xs text-center
-        md:col-start-2 md:row-span-2 md:self-start md:text-start"
+            className="transform-header-items max-w-xs text-center md:col-start-2
+        md:col-end-4 md:row-span-2 md:max-w-xl md:self-start md:text-start"
           >
             {bio}
           </p>

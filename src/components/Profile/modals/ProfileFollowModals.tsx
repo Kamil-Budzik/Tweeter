@@ -24,6 +24,8 @@ const ProfileFollowModals = ({
     follows: followData.follows,
   });
 
+  console.log(data);
+
   return (
     <>
       <FollowTemplate
