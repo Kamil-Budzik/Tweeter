@@ -75,3 +75,11 @@ model SavedPost {
   @@index([postId])
   @@index([userId])
 }
+
+model UserBio {
+  id      Int    @id @default(autoincrement())
+  userId  String @unique()
+  content String @db.LongText()
+
+  @@index([userId])
+}

@@ -13,6 +13,5 @@ export const filterUserForClientWithDetails = (user: User) => {
     id: user.id,
     username: user.username || "",
     profileImageUrl: user.profileImageUrl,
-    bio: "Photographer & Filmmaker based in Copenhagen, Denmark ✵ 🇩🇰",
   };
 };

@@ -67,6 +67,12 @@ export const profileRouter = createTRPCRouter({
         include: INCLUDE_IN_POST,
       });
 
+      const userBio = await ctx.prisma.userBio.findFirst({
+        where: {
+          userId: user.id,
+        },
+      });
+
       const follows = await ctx.prisma.follow.findMany({
         where: {
           userId: user.id,
@@ -80,7 +86,10 @@ export const profileRouter = createTRPCRouter({
 
       return {
         posts,
-        user,
+        user: {
+          ...user,
+          bio: userBio?.content || "No bio yet",
+        },
         followData: {
           followedBy,
           follows,
@@ -114,9 +123,27 @@ export const profileRouter = createTRPCRouter({
         })
       ).map(filterUserForClientWithDetails);
 
+      const usersBio = await ctx.prisma.userBio.findMany();
+
+      let followedBy = users.filter((user) => followersIds.includes(user.id));
+
+      let follows = users.filter((user) => followsIds.includes(user.id));
+
+      followedBy = followedBy.map((user) => ({
+        ...user,
+        bio:
+          usersBio.filter((item) => item.userId === user.id)[0]?.content || "",
+      }));
+
+      follows = follows.map((user) => ({
+        ...user,
+        bio:
+          usersBio.filter((item) => item.userId === user.id)[0]?.content || "",
+      }));
+
       return {
-        followedBy: users.filter((user) => followersIds.includes(user.id)),
-        follows: users.filter((user) => followsIds.includes(user.id)),
+        followedBy,
+        follows,
       };
     }),
   toggleFollow: publicProcedure
