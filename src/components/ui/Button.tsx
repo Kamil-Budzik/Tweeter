@@ -6,6 +6,7 @@ interface Props {
   type?: "button" | "submit" | "reset";
   icon?: "follow";
   onClick?: () => void;
+  className?: string;
 }
 
 export const Button = ({
@@ -14,11 +15,12 @@ export const Button = ({
   type,
   icon,
   onClick,
+  className,
 }: PropsWithChildren<Props>) => (
   <button
     onClick={onClick}
     type={type ?? "button"}
-    className="flex items-center justify-center rounded bg-blue-500 px-6 py-2 font-medium text-white transition hover:bg-blue-600 disabled:bg-blue-300"
+    className={`flex items-center justify-center rounded bg-blue-500 px-6 py-2 font-medium text-white transition hover:bg-blue-600 disabled:bg-blue-300 ${className}`}
     disabled={isDisabled}
   >
     {icon === "follow" && <MdPersonAdd className="mr-1" />}

@@ -1,6 +1,7 @@
 import { Button } from "~/components/ui/Button";
 import { api } from "~/utils/api";
 import { useUser } from "@clerk/nextjs";
+import TextAreaEditor from "~/components/ui/TextAreaEditor";
 
 interface Props {
   username: string;
@@ -80,12 +81,13 @@ const ProfileHeader = ({
           </div>
 
           {/*BIO*/}
-          <p
-            className="transform-header-items max-w-xs text-center md:col-start-2
-        md:col-end-4 md:row-span-2 md:max-w-xl md:self-start md:text-start"
-          >
-            {bio}
-          </p>
+          {user?.username === username ? (
+            <TextAreaEditor txt={bio} />
+          ) : (
+            <p className="transform-header-items max-w-xs text-center md:col-start-2 md:col-end-4 md:row-span-2 md:max-w-xl md:self-start md:text-start">
+              {bio}
+            </p>
+          )}
 
           {/*Follow button*/}
           {/*TODO: change this onClick, button should be able to accept it as a prop*/}
