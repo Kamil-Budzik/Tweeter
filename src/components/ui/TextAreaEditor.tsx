@@ -1,10 +1,21 @@
 import { useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { Button } from "~/components/ui/Button";
+import { useUser } from "@clerk/nextjs";
+import { api } from "~/utils/api";
 
 const TextAreaEditor = ({ txt }: { txt: string }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [v, setV] = useState(txt);
+  const { user } = useUser();
+  const ctx = api.useContext();
+  const { mutate } = api.profile.editBio.useMutation({
+    onSuccess: () => {
+      void ctx.profile.getDataByUsername.invalidate({
+        username: user?.username as string,
+      });
+    },
+  });
   const handleEditClick = () => {
     if (isEditing) {
       setIsEditing(false);
@@ -16,7 +27,7 @@ const TextAreaEditor = ({ txt }: { txt: string }) => {
 
   const handleSave = () => {
     setIsEditing(false);
-    console.log(v);
+    mutate({ userId: user?.id as string, content: v });
   };
 
   return (

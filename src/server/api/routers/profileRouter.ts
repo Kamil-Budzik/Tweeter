@@ -146,6 +146,21 @@ export const profileRouter = createTRPCRouter({
         follows,
       };
     }),
+  editBio: publicProcedure
+    .input(z.object({ userId: z.string(), content: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.userBio.deleteMany({
+        where: {
+          userId: input.userId,
+        },
+      });
+      await ctx.prisma.userBio.create({
+        data: {
+          userId: input.userId,
+          content: input.content,
+        },
+      });
+    }),
   toggleFollow: publicProcedure
     .input(
       z.object({
